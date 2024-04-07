@@ -16,6 +16,7 @@ print("Current Date:", formDate)
 current_Month = int(current_Month)
 current_Day = int(current_Day)
 
+
 def reserved_room(user_room_reserved):
     while True:
         print(" ")
@@ -152,7 +153,7 @@ def sche_room(user_room_reserved, name, program):
                                     if date == reserved_rooms_AVR1[x][3] and schedule_time == reserved_rooms_AVR1[x][4]:
                                         print(f"Sorry, {int_result1} is fully booked at {schedule_time}. "
                                               f"Please choose another day")
-                                        sche_room(user_room_reserved, name, program)
+                                        return sche_room(user_room_reserved, name, program)
                                 else:
                                     print("Reservation Confirmed!")
                                     print(f"Last_Name: {name} | Program/Course: {program} | "
@@ -173,7 +174,7 @@ def sche_room(user_room_reserved, name, program):
                                     if date == reserved_rooms_AVR2[x][3] and schedule_time == reserved_rooms_AVR2[x][4]:
                                         print(f"Sorry, {int_result1} is fully booked at {schedule_time}. "
                                               f"Please choose another day")
-                                        sche_room(user_room_reserved, name, program)
+                                        return sche_room(user_room_reserved, name, program)
                                 else:
                                     print("Reservation Confirmed!")
                                     print(f"Last_Name: {name} | Program/Course: {program} | "
@@ -194,7 +195,7 @@ def sche_room(user_room_reserved, name, program):
                                     if date == reserved_rooms_AVR3[x][3] and schedule_time == reserved_rooms_AVR3[x][4]:
                                         print(f"Sorry, {int_result1} is fully booked at {schedule_time}. "
                                               f"Please choose another day")
-                                        sche_room(user_room_reserved, name, program)
+                                        return sche_room(user_room_reserved, name, program)
                                 else:
                                     print("Reservation Confirmed!")
                                     print(f"Last_Name: {name} | Program/Course: {program} | "
@@ -245,6 +246,7 @@ def choosing_room():
         else:
             print("Room Does not Exist")
             continue
+
 
 def available_rooms():
     available_rooms_lists = ["AVR1", "AVR2", "AVR3"]
