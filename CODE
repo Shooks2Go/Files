@@ -1,4 +1,3 @@
-from datetime import datetime
 import datetime
 import calendar
 
@@ -17,14 +16,7 @@ print("Current Date:", formDate)
 current_Month = int(current_Month)
 current_Day = int(current_Day)
 
-def check_conflict_sched1(new_reservation):
-    for room, existing_reservation in reserved_rooms_AVR1:
-        if existing_reservation == new_reservation:
-            print("This schedule is already booked. Please book for another date or time.")
-            return True
-    return False
-
-def AVR1():
+def reserved_room(user_room_reserved):
     while True:
         print(" ")
         print("[0] TO GO BACK")
@@ -51,7 +43,8 @@ def AVR1():
             program = input("Enter Program/Course: ")
 
             if program == 'B':
-                return AVR1()
+                reserved_room(user_room_reserved)
+
             try:
                 program = int(program)
                 if program == 1:
@@ -66,351 +59,155 @@ def AVR1():
                 print("INVALID INPUT ( Please enter 1 or 2 ) or ( B to go back )")
                 continue
 
-        while True:
-            try:
-                print(" ")
-                print("- - - - - - - - - - - - - - - - - - -")
-                print("Sample Format ||  [2] for Feb")
-                print("Enter [B] to go back")
-                print("- - - - - - - - - - - - - - - - - - -")
-                month = input("Enter a Month: ")
+        return [user_room_reserved, name, program]
 
-                if month == "B":
+
+def sche_room(user_room_reserved, name, program):
+    while True:
+        try:
+            print(" ")
+            print("- - - - - - - - - - - - - - - - - - -")
+            print("Sample Format ||  [2] for Feb")
+            print("Enter [B] to go back")
+            print("- - - - - - - - - - - - - - - - - - -")
+            month = input("Enter a Month: ")
+
+            if month == "B":
+                break
+
+            elif not month.isdigit():
+                print("Invalid Input!")
+                continue
+
+            month = int(month)
+            if month == 0:
+                print("Invalid Input! Please refer to Sample Format")
+                continue
+            elif month < current_Month:
+                print("Invalid Input! You can't reserve a past Month")
+                continue
+            else:
+                day_count = calendar.monthrange(2024, month)
+                x = list(day_count)
+                x.pop(0)
+                int_result = int(''.join(map(str, x)))  # list to int
+                num_month = calendar.month_name[month]  # int to month name
+                print(" ")
+                print("- - - - - - - - - - - - - - - - - - - - - - - - -")
+                print(f"All days in {num_month} is 1 - {int_result}    |")
+                print("[B] TO GO BACK                                  |")
+                print("- - - - - - - - - - - - - - - - - - - - - - - - -")
+
+            while month >= current_Month:
+                day = input("Enter a Day: ")
+
+                if day == 'B':
                     break
 
-                elif not month.isdigit():
-                    print("Invalid Input!")
+                if not day.isdigit():
+                    print("INVALID DAY")
+                    print(" ")
                     continue
-
-                month = int(month)
-                if month == 0:
+                day = int(day)
+                if day == 0:
                     print("Invalid Input! Please refer to Sample Format")
                     continue
-                elif month < current_Month:
-                    print("Invalid Input! You can't reserve a past Month")
-                    continue
-                else:
-                    day_count = calendar.monthrange(2024, month)
-                    x = list(day_count)
-                    x.pop(0)
-                    int_result = int(''.join(map(str, x)))  # list to int
-                    num_Month = calendar.month_name[month]  # int to month name
-                    print(" ")
-                    print("- - - - - - - - - - - - - - - - - - - - - - - - -")
-                    print(f"All days in {num_Month} is 1 - {int_result}    |")
-                    print("[B] TO GO BACK                                  |")
-                    print("- - - - - - - - - - - - - - - - - - - - - - - - -")
-
-                while month >= current_Month:
-                    day = input("Enter a Day: ")
-
-                    if day == 'B':
-                        break
-
-                    if not day.isdigit():
-                        print("INVALID DAY")
-                        print(" ")
+                elif month == current_Month:
+                    if day < current_Day:  # Tungod ni sa currrent day = Today.date nga gi call sa taas
+                        print("Invalid Input! You can't reserve a past date")
                         continue
-                    day = int(day)
-                    if day == 0:
+                    elif day > int_result:  # para ni dle mo lapas sa total na day sa each month
                         print("Invalid Input! Please refer to Sample Format")
                         continue
-                    elif month == current_Month:
-                        if day < current_Day:  # Tungod ni sa currrent day = Today.date nga gi call sa taas
-                            print("Invalid Input! You can't reserve a past date")
-                            continue
-                        elif day > int_result:  # para ni dle mo lapas sa total na day sa each month
-                            print("Invalid Input! Please refer to Sample Format")
-                            continue
-                        else:
-                            int_result1 = str(day)  # day to string para sa print output
-
-                    elif day > int_result:
-                        print("Invalid Input")
-                        continue
                     else:
-                        int_result1 = str(day)
+                        int_result1 = str(day)  # day to string para sa print output
 
-                    while True:
-                        print(" ")
-                        print("[B] TO GO BACK")
-                        schedule_time = input("Enter (AM / PM): ")
-                        print("- - - - - - - - - - - - - - - - - - -")
-                        print(" ")
-                        if schedule_time == 'B':
-                            break
-                        if schedule_time == "AM" or schedule_time == "PM":
-                            new_reservation = f"Last_Name: {name} | Program/Course: {program} | Schedule: {num_Month} {int_result1} {current_Year} | Time: {schedule_time}"
-                            if not check_conflict_sched1(new_reservation):
+                elif day > int_result:
+                    print("Invalid Input")
+                    continue
+                else:
+                    int_result1 = str(day)
 
+                while True:
+                    print(" ")
+                    print("[B] TO GO BACK")
+                    schedule_time = input("Enter (AM / PM): ")
+                    print("- - - - - - - - - - - - - - - - - - -")
+                    print(" ")
+                    if schedule_time == 'B':
+                        break
+                    if schedule_time == "AM" or schedule_time == "PM":
+
+                        date = num_month + " " + int_result1 + ", " + current_Year
+                        if user_room_reserved == 1:
+                            if len(reserved_rooms_AVR1) == 0:
                                 print("Reservation Confirmed!")
-                                print(f"Last_Name: {name} | Program/Course: {program} | Schedule: {calendar.month_name[month]} {int_result1}, {current_Year} | Time: {schedule_time}")
-                                new_reservation = f"Last_Name: {name} | Program/Course: {program} | Schedule: {num_Month} {int_result1} {current_Year} | Time: {schedule_time}"
-                                reserved_rooms_AVR1.append(("AVR 1", new_reservation))
-                                return True
-                        else:
-                            print("INVALID TIME")
-            except ValueError:
-                print("INVALID INPUT")
-                continue
-
-
-def AVR2():
-    while True:
-        print(" ")
-        print("[0] TO GO BACK")
-        print("---------------------------")
-
-        name = str(input("Enter Last_Name: "))
-
-        if name == '0':
-            return choosing_room()
-
-        elif name.isdigit():
+                                print(f"Last_Name: {name} | Program/Course: {program} | "
+                                      f"Schedule: {date} "
+                                      f"| Time: {schedule_time}")
+                                return reserved_rooms_AVR1.append(("AVR 1", name, program, date,
+                                                                   schedule_time))
+                            else:
+                                for x in range(len(reserved_rooms_AVR1)):
+                                    if date == reserved_rooms_AVR1[x][3] and schedule_time == reserved_rooms_AVR1[x][4]:
+                                        print(f"Sorry, {int_result1} is fully booked at {schedule_time}. "
+                                              f"Please choose another day")
+                                        sche_room(user_room_reserved, name, program)
+                                else:
+                                    print("Reservation Confirmed!")
+                                    print(f"Last_Name: {name} | Program/Course: {program} | "
+                                          f"Schedule: {date} "
+                                          f"| Time: {schedule_time}")
+                                    return reserved_rooms_AVR1.append(("AVR 1", name, program, date,
+                                                                       schedule_time))
+                        if user_room_reserved == 2:
+                            if len(reserved_rooms_AVR2) == 0:
+                                print("Reservation Confirmed!")
+                                print(f"Last_Name: {name} | Program/Course: {program} | "
+                                      f"Schedule: {date} "
+                                      f"| Time: {schedule_time}")
+                                return reserved_rooms_AVR2.append(("AVR 1", name, program, date,
+                                                                   schedule_time))
+                            else:
+                                for x in range(len(reserved_rooms_AVR2)):
+                                    if date == reserved_rooms_AVR2[x][3] and schedule_time == reserved_rooms_AVR2[x][4]:
+                                        print(f"Sorry, {int_result1} is fully booked at {schedule_time}. "
+                                              f"Please choose another day")
+                                        sche_room(user_room_reserved, name, program)
+                                else:
+                                    print("Reservation Confirmed!")
+                                    print(f"Last_Name: {name} | Program/Course: {program} | "
+                                          f"Schedule: {date} "
+                                          f"| Time: {schedule_time}")
+                                    return reserved_rooms_AVR3.append(("AVR 2", name, program, date,
+                                                                       schedule_time))
+                        if user_room_reserved == 3:
+                            if len(reserved_rooms_AVR3) == 0:
+                                print("Reservation Confirmed!")
+                                print(f"Last_Name: {name} | Program/Course: {program} | "
+                                      f"Schedule: {date} "
+                                      f"| Time: {schedule_time}")
+                                return reserved_rooms_AVR3.append(("AVR 3", name, program, date,
+                                                                   schedule_time))
+                            else:
+                                for x in range(len(reserved_rooms_AVR3)):
+                                    if date == reserved_rooms_AVR3[x][3] and schedule_time == reserved_rooms_AVR3[x][4]:
+                                        print(f"Sorry, {int_result1} is fully booked at {schedule_time}. "
+                                              f"Please choose another day")
+                                        sche_room(user_room_reserved, name, program)
+                                else:
+                                    print("Reservation Confirmed!")
+                                    print(f"Last_Name: {name} | Program/Course: {program} | "
+                                          f"Schedule: {date} "
+                                          f"| Time: {schedule_time}")
+                                    return reserved_rooms_AVR3.append(("AVR 1", name, program, date,
+                                                                       schedule_time))
+                    else:
+                        print("INVALID TIME")
+        except ValueError:
             print("INVALID INPUT")
-            print(" ")
             continue
 
-        while True:
-            print(" ")
-            print("------------------")
-            print("[1] COT          |")
-            print("[2] CEA          |")
-            print("[B] GO BACK      |")
-            print("------------------")
-
-            program = input("Enter Program/Course: ")
-
-            if program == 'B':
-                return AVR2()
-            try:
-                program = int(program)
-                if program == 1:
-                    program = "COT"
-                    break
-                elif program == 2:
-                    program = "CEA"
-                    break
-                else:
-                    print("INVALID PROGRAM CHOICE")
-            except ValueError:
-                print("INVALID INPUT ( Please enter 1 or 2 ) or ( B to go back )")
-                continue
-
-        while True:
-            try:
-                print(" ")
-                print("- - - - - - - - - - - - - - - - - - -")
-                print("Sample Format ||  [2] for Feb")
-                print("Enter [B] to go back")
-                print("- - - - - - - - - - - - - - - - - - -")
-                month = input("Enter a Month: ")
-
-                if month == "B":
-                    break
-
-                elif not month.isdigit():
-                    print("Invalid Input!")
-                    continue
-
-
-                month = int(month)
-                if month == 0:
-                    print("Invalid Input! Please refer to Sample Format")
-                    continue
-                elif month < current_Month:
-                    print("Invalid Input! You can't reserve a past Month")
-                    continue
-                else:
-                    day_count = calendar.monthrange(2024, month)
-                    x = list(day_count)
-                    x.pop(0)
-                    int_result = int(''.join(map(str, x)))  # list to int
-                    num_Month = calendar.month_name[month]  # int to month name
-                    print(" ")
-                    print("- - - - - - - - - - - - - - - - - - - - - - - - -")
-                    print(f"All days in {num_Month} is 1 - {int_result}    |")
-                    print("[B] TO GO BACK                                  |")
-                    print("- - - - - - - - - - - - - - - - - - - - - - - - -")
-
-                while month >= current_Month:
-                    day = input("Enter a Day: ")
-
-                    if day == 'B':
-                        break
-                    if not day.isdigit():
-                        print("INVALID DAY")
-                        print(" ")
-                        continue
-                    day = int(day)
-                    if day == 0:
-                        print("Invalid Input! Please refer to Sample Format")
-                        continue
-                    elif month == current_Month:
-                        if day < current_Day:  # Tungod ni sa currrent day = Today.date nga gi call sa taas
-                            print("Invalid Input! You can't reserve a past date")
-                            continue
-                        elif day > int_result:  # para ni dle mo lapas sa total na day sa each month
-                            print("Invalid Input! Please refer to Sample Format")
-                            continue
-                        else:
-                            int_result1 = str(day)  # day to string para sa print output
-
-                    elif day > int_result:
-                        print("Invalid Input")
-                        continue
-                    else:
-                        int_result1 = str(day)
-
-                    while True:
-                        print("[B] TO GO BACK")
-                        schedule_time = input("Enter (AM / PM): ")
-                        print("- - - - - - - - - - - - - - - - - - -")
-                        print(" ")
-                        if schedule_time == 'B':
-                            break
-                        if schedule_time == "AM" or schedule_time == "PM":
-                            print("Reservation Confirmed!")
-                            print(
-                                f"Last_Name: {name} | Program/Course: {program} | Schedule: {calendar.month_name[month]} {int_result1}, {current_Year} | Time: {schedule_time}")
-                            reservation_info = f"Last_Name: {name} | Program/Course: {program} | Schedule: {num_Month} {int_result1} {current_Year} | Time: {schedule_time}"
-
-                            reserved_rooms_AVR2.append(("AVR 2", reservation_info))
-                            return True
-                        else:
-                            print("INVALID TIME")
-            except ValueError:
-                print("INVALID INPUT")
-                continue
-
-
-def AVR3():
-    while True:
-        print(" ")
-        print("[0] TO GO BACK")
-        print("---------------------------")
-
-        name = str(input("Enter Last_Name: "))
-
-        if name == '0':
-            return choosing_room()
-
-        elif name.isdigit():
-            print("INVALID INPUT")
-            print(" ")
-            continue
-
-        while True:
-            print(" ")
-            print("------------------")
-            print("[1] COT          |")
-            print("[2] CEA          |")
-            print("[B] GO BACK      |")
-            print("------------------")
-
-            program = input("Enter Program/Course: ")
-
-            if program == 'B':
-                return AVR3()
-            try:
-                program = int(program)
-                if program == 1:
-                    program = "COT"
-                    break
-                elif program == 2:
-                    program = "CEA"
-                    break
-                else:
-                    print("INVALID PROGRAM CHOICE")
-            except ValueError:
-                print("INVALID INPUT ( Please enter 1 or 2 ) or ( B to go back )")
-                continue
-
-        while True:
-            try:
-                print(" ")
-                print("- - - - - - - - - - - - - - - - - - -")
-                print("Sample Format ||  [2] for Feb")
-                print("Enter [B] to go back")
-                print("- - - - - - - - - - - - - - - - - - -")
-                month = input("Enter a Month: ")
-
-                if month == "B":
-                    break
-
-                elif not month.isdigit():
-                    print("Invalid Input!")
-                    continue
-
-                month = int(month)
-                if month == 0:
-                    print("Invalid Input! Please refer to Sample Format")
-                    continue
-                elif month < current_Month:
-                    print("Invalid Input! You can't reserve a past Month")
-                    continue
-                else:
-                    day_count = calendar.monthrange(2024, month)
-                    x = list(day_count)
-                    x.pop(0)
-                    int_result = int(''.join(map(str, x)))  # list to int
-                    num_Month = calendar.month_name[month]  # int to month name
-                    print(" ")
-                    print("- - - - - - - - - - - - - - - - - - - - - - - - -")
-                    print(f"All days in {num_Month} is 1 - {int_result}    |")
-                    print("[B] TO GO BACK                                  |")
-                    print("- - - - - - - - - - - - - - - - - - - - - - - - -")
-
-                while month >= current_Month:
-                    day = input("Enter a Day: ")
-
-                    if day == 'B':
-                        break
-                    if not day.isdigit():
-                        print("INVALID DAY")
-                        print(" ")
-                        continue
-                    day = int(day)
-                    if day == 0:
-                        print("Invalid Input! Please refer to Sample Format")
-                        continue
-                    elif month == current_Month:
-                        if day < current_Day:  # Tungod ni sa currrent day = Today.date nga gi call sa taas
-                            print("Invalid Input! You can't reserve a past date")
-                            continue
-                        elif day > int_result:  # para ni dle mo lapas sa total na day sa each month
-                            print("Invalid Input! Please refer to Sample Format")
-                            continue
-                        else:
-                            int_result1 = str(day)  # day to string para sa print output
-
-                    elif day > int_result:
-                        print("Invalid Input")
-                        continue
-                    else:
-                        int_result1 = str(day)
-
-                    while True:
-                        print(" ")
-                        print("[B] TO GO BACK")
-                        schedule_time = input("Enter (AM / PM): ")
-                        print("- - - - - - - - - - - - - - - - - - -")
-                        print(" ")
-                        if schedule_time == 'B':
-                            break
-                        if schedule_time == "AM" or schedule_time == "PM":
-                            print("Reservation Confirmed!")
-                            print(
-                                f"Last_Name: {name} | Program/Course: {program} | Schedule: {calendar.month_name[month]} {int_result1}, {current_Year} | Time: {schedule_time}")
-                            reservation_info = f"Last_Name: {name} | Program/Course: {program} | Schedule: {num_Month} {int_result1} {current_Year} | Time: {schedule_time}"
-
-                            reserved_rooms_AVR3.append(("AVR 3", reservation_info))
-                            return True
-                        else:
-                            print("INVALID TIME")
-            except ValueError:
-                print("INVALID INPUT")
-                continue
 
 def choosing_room():
     print(" ")
@@ -429,13 +226,16 @@ def choosing_room():
 
         user_room = int(user_room)
         if user_room == 1:
-            AVR1()
+            room_info = reserved_room(1)
+            sche_room(room_info[0], room_info[1], room_info[2])
             break
         elif user_room == 2:
-            AVR2()
+            room_info = reserved_room(2)
+            sche_room(room_info[0], room_info[1], room_info[2])
             break
         elif user_room == 3:
-            AVR3()
+            room_info = reserved_room(3)
+            sche_room(room_info[0], room_info[1], room_info[2])
             break
         elif user_room == 0:
             break
@@ -443,9 +243,10 @@ def choosing_room():
             print("Room Does not Exist")
             continue
 
+
 def available_rooms():
-    available_rooms = ["AVR1", "AVR2", "AVR3"]
-    print(available_rooms)
+    available_rooms_lists = ["AVR1", "AVR2", "AVR3"]
+    print(available_rooms_lists)
 
 
 while True:
@@ -463,32 +264,8 @@ while True:
             continue
 
         if user_input == 1:
-            print(" ")
-            print("---Available Rooms---")
-            available_rooms()
-            print(" ")
+            choosing_room()
 
-            while True:
-                user_room = input("Enter Room#: ")
-                if not user_room.isdigit():
-                    print("INVALID INPUT\n")
-                    continue
-
-                user_room = int(user_room)
-                if user_room == 1:
-                    AVR1()
-                    break
-                elif user_room == 2:
-                    AVR2()
-                    break
-                elif user_room == 3:
-                    AVR3()
-                    break
-                elif user_room == 0:
-                    break
-                else:
-                    print("Room Does not Exist")
-                    continue
         elif user_input == 2:
             print("Available Rooms")
             available_rooms()
@@ -548,4 +325,3 @@ while True:
 
         else:
             print("INVALID CHOICE")
-
