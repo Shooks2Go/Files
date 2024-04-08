@@ -20,8 +20,8 @@ current_Day = int(current_Day)
 def reserved_room(user_room_reserved):
     while True:
         print(" ")
-        print("---------------------------")
         print("[0] TO GO BACK")
+        print("---------------------------")
 
         name = str(input("Enter Last_Name: "))
 
@@ -113,7 +113,6 @@ def sche_room(user_room_reserved, name, program):
                 if day == 0:
                     print("Invalid Input! Please refer to Sample Format")
                     continue
-
                 elif month == current_Month:
                     if day < current_Day:  # Tungod ni sa currrent day = Today.date nga gi call sa taas
                         print("Invalid Input! You can't reserve a past date")
@@ -147,35 +146,29 @@ def sche_room(user_room_reserved, name, program):
                                 print(f"Last_Name: {name} | Program/Course: {program} | "
                                       f"Schedule: {date} "
                                       f"| Time: {schedule_time}")
-                                return reserved_rooms_AVR1.append(f"Last_Name: {name} | Program/Course: {program} | "
-                                                                  f"Schedule: {date} "
-                                                                  f"| Time: {schedule_time}")
-
+                                return reserved_rooms_AVR1.append(("AVR 1", name, program, date,
+                                                                   schedule_time))
                             else:
                                 for x in range(len(reserved_rooms_AVR1)):
                                     if date == reserved_rooms_AVR1[x][3] and schedule_time == reserved_rooms_AVR1[x][4]:
                                         print(f"Sorry, {int_result1} is fully booked at {schedule_time}. "
-                                              f"Please choose another schedule")
+                                              f"Please choose another day")
                                         return sche_room(user_room_reserved, name, program)
                                 else:
                                     print("Reservation Confirmed!")
                                     print(f"Last_Name: {name} | Program/Course: {program} | "
                                           f"Schedule: {date} "
                                           f"| Time: {schedule_time}")
-                                    return reserved_rooms_AVR1.append(f"Last_Name: {name} | Program/Course: {program} | "
-                                                                      f"Schedule: {date} "
-                                                                      f"| Time: {schedule_time}")
-
+                                    return reserved_rooms_AVR1.append(("AVR 1", name, program, date,
+                                                                       schedule_time))
                         if user_room_reserved == 2:
                             if len(reserved_rooms_AVR2) == 0:
                                 print("Reservation Confirmed!")
                                 print(f"Last_Name: {name} | Program/Course: {program} | "
                                       f"Schedule: {date} "
                                       f"| Time: {schedule_time}")
-                                return reserved_rooms_AVR2.append(f"Last_Name: {name} | Program/Course: {program} | "
-                                                                  f"Schedule: {date} "
-                                                                  f"| Time: {schedule_time}")
-
+                                return reserved_rooms_AVR2.append(("AVR 1", name, program, date,
+                                                                   schedule_time))
                             else:
                                 for x in range(len(reserved_rooms_AVR2)):
                                     if date == reserved_rooms_AVR2[x][3] and schedule_time == reserved_rooms_AVR2[x][4]:
@@ -187,20 +180,16 @@ def sche_room(user_room_reserved, name, program):
                                     print(f"Last_Name: {name} | Program/Course: {program} | "
                                           f"Schedule: {date} "
                                           f"| Time: {schedule_time}")
-                                    return reserved_rooms_AVR2.append(f"Last_Name: {name} | Program/Course: {program} | "
-                                                                      f"Schedule: {date} "
-                                                                      f"| Time: {schedule_time}")
-
+                                    return reserved_rooms_AVR3.append(("AVR 2", name, program, date,
+                                                                       schedule_time))
                         if user_room_reserved == 3:
                             if len(reserved_rooms_AVR3) == 0:
                                 print("Reservation Confirmed!")
                                 print(f"Last_Name: {name} | Program/Course: {program} | "
                                       f"Schedule: {date} "
                                       f"| Time: {schedule_time}")
-                                return reserved_rooms_AVR3.append(f"Last_Name: {name} | Program/Course: {program} | "
-                                                                  f"Schedule: {date} "
-                                                                  f"| Time: {schedule_time}")
-
+                                return reserved_rooms_AVR3.append(("AVR 3", name, program, date,
+                                                                   schedule_time))
                             else:
                                 for x in range(len(reserved_rooms_AVR3)):
                                     if date == reserved_rooms_AVR3[x][3] and schedule_time == reserved_rooms_AVR3[x][4]:
@@ -212,10 +201,8 @@ def sche_room(user_room_reserved, name, program):
                                     print(f"Last_Name: {name} | Program/Course: {program} | "
                                           f"Schedule: {date} "
                                           f"| Time: {schedule_time}")
-                                    return reserved_rooms_AVR3.append(f"Last_Name: {name} | Program/Course: {program} | "
-                                                                      f"Schedule: {date} "
-                                                                      f"| Time: {schedule_time}")
-
+                                    return reserved_rooms_AVR3.append(("AVR 1", name, program, date,
+                                                                       schedule_time))
                     else:
                         print("INVALID TIME")
         except ValueError:
@@ -306,9 +293,9 @@ while True:
                     print("No Reserved Schedules yet")
                     print(" ")
                 else:
-                    print("--------------------------------")
+                    print("----------------------------")
                     print("| RESERVED SCHEDULES FOR AVR 1 |")
-                    print("--------------------------------")
+                    print("----------------------------")
                     for i in range(len(reserved_rooms_AVR1)):  # Kaning mga For loop kay para ni sya
                         print(reserved_rooms_AVR1[i])  # Vertical ang Pag display sa List
                     print(" ")
@@ -318,9 +305,9 @@ while True:
                     print("No Reserved Schedules yet")
                     print(" ")
                 else:
-                    print("--------------------------------")
+                    print("----------------------------")
                     print("| RESERVED SCHEDULES FOR AVR 2 |")
-                    print("--------------------------------")
+                    print("----------------------------")
                     for i in range(len(reserved_rooms_AVR2)):  # Kaning mga For loop kay para ni sya
                         print(reserved_rooms_AVR2[i])  # Vertical ang Pag display sa List
                         print(" ")
@@ -330,9 +317,9 @@ while True:
                     print("No Reserved Schedules yet")
                     print(" ")
                 else:
-                    print("--------------------------------")
+                    print("----------------------------")
                     print("| RESERVED SCHEDULES FOR AVR 3 |")
-                    print("--------------------------------")
+                    print("----------------------------")
                     for i in range(len(reserved_rooms_AVR3)):  # Kaning mga For loop kay para ni sya
                         print(reserved_rooms_AVR3[i])  # Vertical ang Pag display sa List
                     print(" ")
