@@ -20,8 +20,8 @@ current_Day = int(current_Day)
 def reserved_room(user_room_reserved):
     while True:
         print(" ")
-        print("[0] TO GO BACK")
         print("---------------------------")
+        print("[0] TO GO BACK")
 
         name = str(input("Enter Last_Name: "))
 
@@ -293,9 +293,9 @@ while True:
                     print("No Reserved Schedules yet")
                     print(" ")
                 else:
-                    print("----------------------------")
+                    print("--------------------------------")
                     print("| RESERVED SCHEDULES FOR AVR 1 |")
-                    print("----------------------------")
+                    print("--------------------------------")
                     for i in range(len(reserved_rooms_AVR1)):  # Kaning mga For loop kay para ni sya
                         print(reserved_rooms_AVR1[i])  # Vertical ang Pag display sa List
                     print(" ")
@@ -305,9 +305,9 @@ while True:
                     print("No Reserved Schedules yet")
                     print(" ")
                 else:
-                    print("----------------------------")
+                    print("--------------------------------")
                     print("| RESERVED SCHEDULES FOR AVR 2 |")
-                    print("----------------------------")
+                    print("--------------------------------")
                     for i in range(len(reserved_rooms_AVR2)):  # Kaning mga For loop kay para ni sya
                         print(reserved_rooms_AVR2[i])  # Vertical ang Pag display sa List
                         print(" ")
@@ -317,9 +317,9 @@ while True:
                     print("No Reserved Schedules yet")
                     print(" ")
                 else:
-                    print("----------------------------")
+                    print("--------------------------------")
                     print("| RESERVED SCHEDULES FOR AVR 3 |")
-                    print("----------------------------")
+                    print("--------------------------------")
                     for i in range(len(reserved_rooms_AVR3)):  # Kaning mga For loop kay para ni sya
                         print(reserved_rooms_AVR3[i])  # Vertical ang Pag display sa List
                     print(" ")
