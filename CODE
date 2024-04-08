@@ -293,9 +293,9 @@ while True:
                     print("No Reserved Schedules yet")
                     print(" ")
                 else:
-                    print("--------------------------------")
-                    print("| RESERVED SCHEDULES FOR AVR 1 |")
-                    print("--------------------------------")
+                    print("------------------------------------------------------------------------")
+                    print("|                    RESERVED SCHEDULES FOR AVR 1                      |")
+                    print("------------------------------------------------------------------------")
                     for i in range(len(reserved_rooms_AVR1)):  # Kaning mga For loop kay para ni sya
                         print(reserved_rooms_AVR1[i])  # Vertical ang Pag display sa List
                     print(" ")
@@ -305,21 +305,20 @@ while True:
                     print("No Reserved Schedules yet")
                     print(" ")
                 else:
-                    print("--------------------------------")
-                    print("| RESERVED SCHEDULES FOR AVR 2 |")
-                    print("--------------------------------")
+                    print("------------------------------------------------------------------------")
+                    print("|                    RESERVED SCHEDULES FOR AVR 2                      |")
+                    print("------------------------------------------------------------------------")
                     for i in range(len(reserved_rooms_AVR2)):  # Kaning mga For loop kay para ni sya
                         print(reserved_rooms_AVR2[i])  # Vertical ang Pag display sa List
                         print(" ")
-
             elif check_room == 3:
                 if len(reserved_rooms_AVR3) == 0:
                     print("No Reserved Schedules yet")
                     print(" ")
                 else:
-                    print("--------------------------------")
-                    print("| RESERVED SCHEDULES FOR AVR 3 |")
-                    print("--------------------------------")
+                    print("------------------------------------------------------------------------")
+                    print("|                    RESERVED SCHEDULES FOR AVR 3                      |")
+                    print("------------------------------------------------------------------------")
                     for i in range(len(reserved_rooms_AVR3)):  # Kaning mga For loop kay para ni sya
                         print(reserved_rooms_AVR3[i])  # Vertical ang Pag display sa List
                     print(" ")
@@ -328,4 +327,4 @@ while True:
             exit(0)
 
         else:
-            print("INVALID CHOICE")
+            print("INVALID CHOICE")a
