@@ -10,6 +10,7 @@ reserved_rooms_AVR1 = []
 reserved_rooms_AVR2 = []
 reserved_rooms_AVR3 = []
 
+
 def display_option():
     print("------------------------------------------- ")
     print("[1] Reserve Room")
@@ -52,7 +53,7 @@ def choose_room():
             reserved_rooms_AVR3.append(date_sche)
             break
         elif user_choose_room == "0":
-            display_option()
+            break
         else:
             print("Room Does not Exist")
 
@@ -92,9 +93,9 @@ def reserved_room():
             else:
                 print("INVALID INPUT ( Please enter 1 or 2 ) or ( B to go back )")
 
+
 def sche_room(room_reserved, room_choose):
     while True:
-        print(" ")
         print("- - - - - - - - - - - - - - - - - - -")
         print("Sample Format ||  [2] for Feb")
         print("Enter [B] to go back")
@@ -103,7 +104,7 @@ def sche_room(room_reserved, room_choose):
         month = input("Enter a Month: ")
 
         if month == "B":
-            return reserved_room()
+            room_reserved = reserved_room()
 
         if not month.isdigit():
             print("Invalid Input!")
@@ -171,7 +172,7 @@ def sche_room(room_reserved, room_choose):
                             break
 
                         if schedule_time == "AM" or schedule_time == "PM":
-                            date_sche = f"{get_month}, {day} 2024"                # kaning naay f pasabot ana kay Format
+                            date_sche = f"{get_month}, {day} 2024"
                             date_schedule_com = f"{get_month}, {day} 2024 {schedule_time}"
                             return add_room_sche(room_reserved, date_sche, schedule_time, date_schedule_com,
                                                  room_choose, day)
@@ -197,6 +198,10 @@ def add_room_sche(room_reserved, date_sche, schedule_time, date_schedule_com, ro
         print(f"Sorry, {date_sche} AM and PM is fully booked. Please choose another day")
         return sche_room(room_reserved, room_choose)
 
+    if date_schedule_com in (reservation[5] for reservation in check_list_room):
+        print(f"Sorry, {day} is fully booked at {date_sche} {schedule_time}. Please choose another time")
+        return sche_room(room_reserved, room_choose)
+
     print("Reservation Confirmed!")
     print(f"Last_Name: {room_reserved[0]} | Program/Course: {room_reserved[1]} | "
           f"Schedule: {date_sche} "
@@ -218,7 +223,6 @@ while option_loop:
     elif user_input == "2":
         print("Available Rooms")
         print("['AVR1', 'AVR2', 'AVR3']")
-
     elif user_input == "3":
         print("\n---Available Rooms---")
         print("AVR 1")
@@ -235,9 +239,6 @@ while option_loop:
                     view_list = reserved_rooms_AVR2
                 else:
                     view_list = reserved_rooms_AVR3
-
-                # Nag butang ug view_list varable para isa na ang if statement pag 0 ang sulod sa List
-                # Dili nata mag isa isa ug if statement kada AVR
 
                 if len(view_list) == 0:
                     print("No Reserved Schedules yet\n")
