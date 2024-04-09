@@ -199,10 +199,6 @@ def add_room_sche(room_reserved, date_sche, schedule_time, date_schedule_com, ro
         print(f"Sorry, {date_sche} AM and PM is fully booked. Please choose another day")
         return sche_room(room_reserved, room_choose)
 
-    if date_schedule_com in (reservation[5] for reservation in check_list_room):
-        print(f"Sorry, {day} is booked at Morning {schedule_time}. Please choose another time")
-        return sche_room(room_reserved, room_choose)
-
     print("Reservation Confirmed!")
     print(f"Last_Name: {room_reserved[0]} | Program/Course: {room_reserved[1]} | "
           f"Schedule: {date_sche} "
@@ -253,7 +249,7 @@ while option_loop:
                     print(f"| RESERVED SCHEDULES FOR AVR {check_room}|")
                     print("----------------------------")
                     for i in range(len(view_list)):
-                        print(view_list[i])
+                        print(f"('{view_list[i][0]}, {view_list[i][1]}')")
                     print(" ")
                     break
             else:
