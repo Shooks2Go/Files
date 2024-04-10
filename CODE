@@ -53,25 +53,21 @@ def choose_room():
             reserved_rooms_AVR3.append(date_sche)
             break
         elif user_choose_room == "0":
-            return 
+            break
+
         else:
             print("Room Does not Exist")
 
 
 def reserved_room():
-    reserved_room_loop = True
-    while reserved_room_loop:
-        print("---------------------------")
-        print("[0] TO GO BACK")
 
+    while True:
+        print("---------------------------")
         user_name = input("Enter last name: ")
 
         if user_name.startswith("-") or user_name.endswith("-"):
             print("INVALID INPUT")
             continue
-
-        if user_name == "0":
-            return choose_room()
 
         if user_name.isdigit():
             print("INVALID INPUT\n")
@@ -83,42 +79,40 @@ def reserved_room():
             print("Please Input Again")
             continue
 
-        room_choose_loop = True
-        while room_choose_loop:
+        while True:
             print("\n------------------")
             print("[1] COT          |")
             print("[2] CEA          |")
-            print("[B] GO BACK      |")
+            print("[0] GO BACK      |")
             print("------------------")
 
             program = input("Enter Program/Course: ").strip()
 
-            if program == "B":
+            if program == "0":
                 break
             if program == "1":
                 return [user_name, 'COT']
             elif program == "2":
                 return [user_name, 'CEA']
             else:
-                print("INVALID INPUT ( Please enter 1 or 2 ) or ( B to go back )")
+                print("INVALID INPUT ( Please enter 1 or 2 ) or ( 0 to go back )")
 
 def sche_room(room_reserved, room_choose):
     while True:
         print("- - - - - - - - - - - - - - - - - - -")
         print("Sample Format ||  [2] for Feb")
-        print("Enter [B] to go back")
         print("- - - - - - - - - - - - - - - - - - -")
 
         month = input("Enter a Month: ")
-
-        if month == "B":
-            room_reserved = reserved_room()
 
         if not month.isdigit():
             print("Invalid Input!")
             continue
 
         month = int(month)
+        if month > 12:
+            print("INVALID INPUT EXCEEDED NUMBER OF MONTHS")
+            continue
         if month < current_month:
             print("Invalid Input! You can't reserve a past Month")
             continue
@@ -169,7 +163,7 @@ def sche_room(room_reserved, room_choose):
                                 return add_room_sche(room_reserved, date_sche, schedule_time, date_schedule_com,
                                                      room_choose, day)
                             else:
-                                print("INVALID TIME")
+                                print("INVALID TIME REFER TO SAMPLE FORMAT")
                 else:
                     while True:
                         print("\n[B] TO GO BACK")
@@ -253,9 +247,9 @@ while option_loop:
                     print("No Reserved Schedules yet\n")
                     break
                 else:
-                    print("----------------------------")
-                    print(f"| RESERVED SCHEDULES FOR AVR {check_room}|")
-                    print("----------------------------")
+                    print("--------------------------------------------------------------------------")
+                    print(f"|                     RESERVED SCHEDULES FOR AVR {check_room}                       |")
+                    print("--------------------------------------------------------------------------")
                     for i in range(len(view_list)):
                         print(f"[{view_list[i][0]}| Name: {view_list[i][1]}| Program/Course: {view_list[i][2]}| Schedule: {view_list[i][3]}| Time:{view_list[i][4]}]")
                     print(" ")
