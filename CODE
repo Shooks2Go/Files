@@ -53,7 +53,7 @@ def choose_room():
             reserved_rooms_AVR3.append(date_sche)
             break
         elif user_choose_room == "0":
-            break
+            return 
         else:
             print("Room Does not Exist")
 
@@ -61,16 +61,26 @@ def choose_room():
 def reserved_room():
     reserved_room_loop = True
     while reserved_room_loop:
-        print("\n[0] TO GO BACK")
         print("---------------------------")
+        print("[0] TO GO BACK")
 
         user_name = input("Enter last name: ")
+
+        if user_name.startswith("-") or user_name.endswith("-"):
+            print("INVALID INPUT")
+            continue
 
         if user_name == "0":
             return choose_room()
 
         if user_name.isdigit():
             print("INVALID INPUT\n")
+            continue
+
+        if not user_name.isalpha():            # Kani nga condition para ma force ang user nga mag input lang ug letters
+            print(" ")
+            print("Name can Only contain Letters: ")
+            print("Please Input Again")
             continue
 
         room_choose_loop = True
@@ -85,14 +95,12 @@ def reserved_room():
 
             if program == "B":
                 break
-
             if program == "1":
                 return [user_name, 'COT']
             elif program == "2":
                 return [user_name, 'CEA']
             else:
                 print("INVALID INPUT ( Please enter 1 or 2 ) or ( B to go back )")
-
 
 def sche_room(room_reserved, room_choose):
     while True:
@@ -215,7 +223,7 @@ current_date = f"{current_day}/{current_month}/{current_year}"
 print(current_date)
 option_loop = True
 while option_loop:
-    display_option()
+    display_option()                            # Call sa Display Option nga function
     user_input = input("Enter choice: ").strip()
 
     if user_input == "1":
@@ -223,6 +231,7 @@ while option_loop:
     elif user_input == "2":
         print("Available Rooms")
         print("['AVR1', 'AVR2', 'AVR3']")
+
     elif user_input == "3":
         print("\n---Available Rooms---")
         print("AVR 1")
