@@ -83,6 +83,7 @@ def reserved_room():
             print("\n------------------")
             print("[1] COT          |")
             print("[2] CEA          |")
+            print("[3] CITC")
             print("[0] GO BACK      |")
             print("------------------")
 
@@ -94,8 +95,10 @@ def reserved_room():
                 return [user_name, 'COT']
             elif program == "2":
                 return [user_name, 'CEA']
+            elif program == "3":
+                return [user_name, 'CITC']
             else:
-                print("INVALID INPUT ( Please enter 1 or 2 ) or ( 0 to go back )")
+                print("INVALID INPUT ( Please enter 1, 2 or 3) or ( 0 to go back )")
 
 def sche_room(room_reserved, room_choose):
     while True:
