@@ -33,12 +33,12 @@ def choose_room():
     while choose_room_loop:
         user_choose_room = input("Enter Room#: ")
 
-        if user_choose_room.isalpha():
+        if user_choose_room.isalpha():  #kani nga condition is mag check for invalid input from user
             print("INVALID INPUT\n")
             continue
 
         if user_choose_room == "1":
-            room_reserved = reserved_room()
+            room_reserved = reserved_room() # Goes to reserved_room function
             date_sche = sche_room(room_reserved, "1")
             reserved_rooms_AVR1.append(date_sche)
             break
@@ -65,10 +65,6 @@ def reserved_room():
         print("---------------------------")
         user_name = input("Enter last name: ")
 
-        if user_name.startswith("-") or user_name.endswith("-"):
-            print("INVALID INPUT")
-            continue
-
         if user_name.isdigit():
             print("INVALID INPUT\n")
             continue
@@ -83,7 +79,7 @@ def reserved_room():
             print("\n------------------")
             print("[1] COT          |")
             print("[2] CEA          |")
-            print("[3] CITC")
+            print("[3] CITC         |")
             print("[0] GO BACK      |")
             print("------------------")
 
@@ -92,7 +88,7 @@ def reserved_room():
             if program == "0":
                 break
             if program == "1":
-                return [user_name, 'COT']
+                return [user_name, 'COT']           #Nag gamit ug bracket para ma return as a list
             elif program == "2":
                 return [user_name, 'CEA']
             elif program == "3":
@@ -126,9 +122,9 @@ def sche_room(room_reserved, room_choose):
             if month == current_month:
                 day_show = current_day
             else:
-                day_show = 1
+                day_show = 1    #1 mag sugod ang day sa month
             print("\n- - - - - - - - - - - - - - - - - - - - - - - - -")
-            print(f"All days in {get_month} is {day_show} - {get_max_day}    |")
+            print(f"All days in {get_month} is {day_show} - {get_max_day}    |") #Show number of days in the inputd month
             print("[B] TO GO BACK                                  |")
             print("- - - - - - - - - - - - - - - - - - - - - - - - -")
 
@@ -147,7 +143,7 @@ def sche_room(room_reserved, room_choose):
                     print("Invalid Input! Please refer to Sample Format")
                     continue
 
-                if month == current_month:
+                if month == current_month: #current_month kanang gi call sa taas
                     if day < current_day:
                         print("Invalid Input! You can't reserve a past date")
                         continue
@@ -160,7 +156,7 @@ def sche_room(room_reserved, room_choose):
                             if schedule_time == "B":
                                 break
 
-                            if schedule_time == "AM" or schedule_time == "PM":
+                            if schedule_time == "AM" or schedule_time == "PM":              #Kaning mga f kay format ni sa pag display ug
                                 date_sche = f"{get_month}, {day} 2024"
                                 date_schedule_com = f"{get_month}, {day} 2024 {schedule_time}"
                                 return add_room_sche(room_reserved, date_sche, schedule_time, date_schedule_com,
@@ -169,6 +165,7 @@ def sche_room(room_reserved, room_choose):
                                 print("INVALID TIME REFER TO SAMPLE FORMAT")
                 else:
                     while True:
+
                         print("\n[B] TO GO BACK")
                         schedule_time = input("Enter (AM / PM): ")
                         print("- - - - - - - - - - - - - - - - - - -\n")
@@ -181,9 +178,11 @@ def sche_room(room_reserved, room_choose):
                             date_schedule_com = f"{get_month}, {day} 2024 {schedule_time}"
                             return add_room_sche(room_reserved, date_sche, schedule_time, date_schedule_com,
                                                  room_choose, day)
+
                         else:
                             print("INVALID TIME")
 
+#Check for reserved schedules per room
 
 def add_room_sche(room_reserved, date_sche, schedule_time, date_schedule_com, room_choose, day):
     if room_choose == "1":
@@ -196,12 +195,18 @@ def add_room_sche(room_reserved, date_sche, schedule_time, date_schedule_com, ro
         check_list_room = reserved_rooms_AVR3
         room_name_reserve = 'AVR 3'
 
+    # Kani sha na part kay para mag check ug duplicated schedule
+    # Para mag invalid sya if naay existing sched ana iyang gi input
+    #Kanng reservation[5] index na sa AM or PM
     am_booking = any(f"{date_sche} AM" == reservation[5] for reservation in check_list_room)
     pm_booking = any(f"{date_sche} PM" == reservation[5] for reservation in check_list_room)
 
+    #If statement if ang particular day is fully booked
     if am_booking and pm_booking:
         print(f"Sorry, {date_sche} AM and PM is fully booked. Please choose another day")
         return sche_room(room_reserved, room_choose)
+
+    #If statement if ang particular day is naay existing scheduled time
 
     if date_schedule_com in (reservation[5] for reservation in check_list_room):
         print(f"Sorry, {day} is fully booked at {date_sche} {schedule_time}. Please choose another time")
@@ -253,6 +258,9 @@ while option_loop:
                     print("--------------------------------------------------------------------------")
                     print(f"|                     RESERVED SCHEDULES FOR AVR {check_room}                       |")
                     print("--------------------------------------------------------------------------")
+                    #Para ni sya vertical ang pag display sa code
+                    #Index na ang mga numbers
+                    # Butang tag i kay mao ang variable nga gigamit para mag access sa list
                     for i in range(len(view_list)):
                         print(f"[{view_list[i][0]}| Name: {view_list[i][1]}| Program/Course: {view_list[i][2]}| Schedule: {view_list[i][3]}| Time:{view_list[i][4]}]")
                     print(" ")
