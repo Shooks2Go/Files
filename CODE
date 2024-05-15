@@ -1,274 +1,109 @@
-import datetime
-import calendar
+import pygame
 
-today_date = datetime.datetime.now()
-current_year = today_date.strftime("%Y")
-current_month = int(today_date.strftime("%m"))
-current_day = int(today_date.strftime("%d"))
+BLACK = (0, 0, 0)
 
-reserved_rooms_AVR1 = []
-reserved_rooms_AVR2 = []
-reserved_rooms_AVR3 = []
+pygame.init()
 
+screen_width = 1280
+screen_height = 720
 
-def display_option():
-    print("------------------------------------------- ")
-    print("[1] Reserve Room")
-    print("[2] Check Available Room")
-    print("[3] Check Reserved Room")
-    print("[4] Exit")
-    print("------------------------------------------- ")
+screen = pygame.display.set_mode((screen_width, screen_height))
+pygame.display.set_caption("Fishing Game")
 
+background = pygame.image.load('background.png')
+resized_background = pygame.transform.scale(background, (screen_width, screen_height))
 
-def choose_room():
-    print(" ")
-    print("---Available Rooms---")
-    print("[1] AVR 1")
-    print("[2] AVR 2")
-    print("[3] AVR 3")
-    print("\n[0] BACK")
-    print("----------------------- ")
+class Button:
+    def __init__(self, image, x_pos, y_pos):
+        self.default_image = image
+        self.hover_image = self.change_image_color(image, BLACK)  # Hover color
+        self.image = self.default_image
+        self.rect = self.image.get_rect(center=(x_pos, y_pos))
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+        self.clicked = False
 
-    choose_room_loop = True
-    while choose_room_loop:
-        user_choose_room = input("Enter Room#: ")
+    def change_image_color(self, image, color):
+        # Create a copy of the image and fill it with specified color
+        new_image = image.copy()
+        new_image.fill(color, None, pygame.BLEND_RGBA_MULT)
+        return new_image
 
-        if user_choose_room.isalpha():  #kani nga condition is mag check for invalid input from user
-            print("INVALID INPUT\n")
-            continue
-
-        if user_choose_room == "1":
-            room_reserved = reserved_room() # Goes to reserved_room function
-            date_sche = sche_room(room_reserved, "1")
-            reserved_rooms_AVR1.append(date_sche)
-            break
-        elif user_choose_room == "2":
-            room_reserved = reserved_room()
-            date_sche = sche_room(room_reserved, "2")
-            reserved_rooms_AVR2.append(date_sche)
-            break
-        elif user_choose_room == "3":
-            room_reserved = reserved_room()
-            date_sche = sche_room(room_reserved, "3")
-            reserved_rooms_AVR3.append(date_sche)
-            break
-        elif user_choose_room == "0":
-            break
-
+    def update(self):
+        # Check if mouse is hovering the button
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            self.image = self.hover_image
         else:
-            print("Room Does not Exist")
+            self.image = self.default_image
+
+    def check_clicked_button(self):
+
+        action = False
+        pos = pygame.mouse.get_pos()
+
+        # Check clicked mouse
+        if self.rect.collidepoint(pos):
+
+            # Index [0] mao ang left click, [1] is middle click, [2] Right click
+            if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                self.clicked = True
+                action = True
+            if pygame.mouse.get_pressed()[0] == 0:
+                self.clicked = False
+
+        screen.blit(self.image, (self.rect.x, self.rect.y))
+
+        return action
+
+# Load image
+play_image = pygame.image.load("C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\Play.png").convert_alpha()
+exit_image = pygame.image.load("C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\Exit.png").convert_alpha()
+
+# Resize image
+new_width = 200
+new_height = 100
+
+play_image = pygame.transform.scale(play_image, (new_width, new_height))
+exit_image = pygame.transform.scale(exit_image, (new_width, new_height))
+
+play_button_x = 460
+play_button_y = 450
+
+exit_button_x = 810
+exit_button_y = 450
+
+# button instances
+play_button = Button(play_image, play_button_x, play_button_y)
+exit_button = Button(exit_image, exit_button_x, exit_button_y)
+
+# Main loop
+running = True
+while running:
+
+    pos = pygame.mouse.get_pos()
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    # Update button state
+    play_button.update()
+    exit_button.update()
+
+    # Draw everything
+    screen.blit(resized_background, (0, 0))
+    screen.blit(play_button.image, play_button.rect)
+    screen.blit(exit_button.image, exit_button.rect)
+    pygame.display.flip()
+
+    if play_button.check_clicked_button():
+        print("Start")        # Butang dari ang class function sa dula para mu balhin ang screen ex. game()
+
+    if exit_button.check_clicked_button():
+        running = False
 
 
-def reserved_room():
+    # Frame rate
+    pygame.time.Clock().tick(60)
 
-    while True:
-        print("---------------------------")
-        user_name = input("Enter last name: ")
-
-        if user_name.isdigit():
-            print("INVALID INPUT\n")
-            continue
-
-        if not user_name.isalpha():            # Kani nga condition para ma force ang user nga mag input lang ug letters
-            print(" ")
-            print("Name can Only contain Letters: ")
-            print("Please Input Again")
-            continue
-
-        while True:
-            print("\n------------------")
-            print("[1] COT          |")
-            print("[2] CEA          |")
-            print("[3] CITC         |")
-            print("[0] GO BACK      |")
-            print("------------------")
-
-            program = input("Enter Program/Course: ").strip()
-
-            if program == "0":
-                break
-            if program == "1":
-                return [user_name, 'COT']           #Nag gamit ug bracket para ma return as a list
-            elif program == "2":
-                return [user_name, 'CEA']
-            elif program == "3":
-                return [user_name, 'CITC']
-            else:
-                print("INVALID INPUT ( Please enter 1, 2 or 3) or ( 0 to go back )")
-
-def sche_room(room_reserved, room_choose):
-    while True:
-        print("- - - - - - - - - - - - - - - - - - -")
-        print("Sample Format ||  [2] for Feb")
-        print("- - - - - - - - - - - - - - - - - - -")
-
-        month = input("Enter a Month: ")
-
-        if not month.isdigit():
-            print("Invalid Input!")
-            continue
-
-        month = int(month)
-        if month > 12:
-            print("INVALID INPUT EXCEEDED NUMBER OF MONTHS")
-            continue
-        if month < current_month:
-            print("Invalid Input! You can't reserve a past Month")
-            continue
-        else:
-            get_max_day = calendar.monthrange(2024, month)
-            get_max_day = get_max_day[1]
-            get_month = calendar.month_name[month]
-            if month == current_month:
-                day_show = current_day
-            else:
-                day_show = 1    #1 mag sugod ang day sa month
-            print("\n- - - - - - - - - - - - - - - - - - - - - - - - -")
-            print(f"All days in {get_month} is {day_show} - {get_max_day}    |") #Show number of days in the inputd month
-            print("[B] TO GO BACK                                  |")
-            print("- - - - - - - - - - - - - - - - - - - - - - - - -")
-
-            while True:
-                day = input("Enter a Day: ")
-
-                if day == "B":
-                    break
-
-                if not day.isdigit():
-                    print("Invalid Input!")
-                    continue
-
-                day = int(day)
-                if day > int(get_max_day):
-                    print("Invalid Input! Please refer to Sample Format")
-                    continue
-
-                if month == current_month: #current_month kanang gi call sa taas
-                    if day < current_day:
-                        print("Invalid Input! You can't reserve a past date")
-                        continue
-                    else:
-                        while True:
-                            print("\n[B] TO GO BACK")
-                            schedule_time = input("Enter (AM / PM): ")
-                            print("- - - - - - - - - - - - - - - - - - -\n")
-
-                            if schedule_time == "B":
-                                break
-
-                            if schedule_time == "AM" or schedule_time == "PM":              #Kaning mga f kay format ni sa pag display ug
-                                date_sche = f"{get_month}, {day} 2024"
-                                date_schedule_com = f"{get_month}, {day} 2024 {schedule_time}"
-                                return add_room_sche(room_reserved, date_sche, schedule_time, date_schedule_com,
-                                                     room_choose, day)
-                            else:
-                                print("INVALID TIME REFER TO SAMPLE FORMAT")
-                else:
-                    while True:
-
-                        print("\n[B] TO GO BACK")
-                        schedule_time = input("Enter (AM / PM): ")
-                        print("- - - - - - - - - - - - - - - - - - -\n")
-
-                        if schedule_time == "B":
-                            break
-
-                        if schedule_time == "AM" or schedule_time == "PM":
-                            date_sche = f"{get_month}, {day} 2024"
-                            date_schedule_com = f"{get_month}, {day} 2024 {schedule_time}"
-                            return add_room_sche(room_reserved, date_sche, schedule_time, date_schedule_com,
-                                                 room_choose, day)
-
-                        else:
-                            print("INVALID TIME")
-
-#Check for reserved schedules per room
-
-def add_room_sche(room_reserved, date_sche, schedule_time, date_schedule_com, room_choose, day):
-    if room_choose == "1":
-        check_list_room = reserved_rooms_AVR1
-        room_name_reserve = 'AVR 1'
-    elif room_choose == "2":
-        check_list_room = reserved_rooms_AVR2
-        room_name_reserve = 'AVR 2'
-    else:
-        check_list_room = reserved_rooms_AVR3
-        room_name_reserve = 'AVR 3'
-
-    # Kani sha na part kay para mag check ug duplicated schedule
-    # Para mag invalid sya if naay existing sched ana iyang gi input
-    #Kanng reservation[5] index na sa AM or PM
-    am_booking = any(f"{date_sche} AM" == reservation[5] for reservation in check_list_room)
-    pm_booking = any(f"{date_sche} PM" == reservation[5] for reservation in check_list_room)
-
-    #If statement if ang particular day is fully booked
-    if am_booking and pm_booking:
-        print(f"Sorry, {date_sche} AM and PM is fully booked. Please choose another day")
-        return sche_room(room_reserved, room_choose)
-
-    #If statement if ang particular day is naay existing scheduled time
-
-    if date_schedule_com in (reservation[5] for reservation in check_list_room):
-        print(f"Sorry, {day} is fully booked at {date_sche} {schedule_time}. Please choose another time")
-        return sche_room(room_reserved, room_choose)
-
-    print("Reservation Confirmed!")
-    print(f"Last_Name: {room_reserved[0]} | Program/Course: {room_reserved[1]} | "
-          f"Schedule: {date_sche} "
-          f"| Time: {schedule_time}")
-
-    list_info = (room_name_reserve, room_reserved[0], room_reserved[1], date_sche, schedule_time, date_schedule_com)
-    return list_info
-
-
-current_date = f"{current_day}/{current_month}/{current_year}"
-print(current_date)
-option_loop = True
-while option_loop:
-    display_option()                            # Call sa Display Option nga function
-    user_input = input("Enter choice: ").strip()
-
-    if user_input == "1":
-        choose_room()
-    elif user_input == "2":
-        print("Available Rooms")
-        print("['AVR1', 'AVR2', 'AVR3']")
-
-    elif user_input == "3":
-        print("\n---Available Rooms---")
-        print("AVR 1")
-        print("AVR 2")
-        print("AVR 3")
-
-        while True:
-            check_room = input("Enter Room #: ")
-
-            if check_room in ["1", "2", "3"]:
-                if check_room == "1":
-                    view_list = reserved_rooms_AVR1
-                elif check_room == "2":
-                    view_list = reserved_rooms_AVR2
-                else:
-                    view_list = reserved_rooms_AVR3
-
-                if len(view_list) == 0:
-                    print("No Reserved Schedules yet\n")
-                    break
-                else:
-                    print("--------------------------------------------------------------------------")
-                    print(f"|                     RESERVED SCHEDULES FOR AVR {check_room}                       |")
-                    print("--------------------------------------------------------------------------")
-                    #Para ni sya vertical ang pag display sa code
-                    #Index na ang mga numbers
-                    # Butang tag i kay mao ang variable nga gigamit para mag access sa list
-                    for i in range(len(view_list)):
-                        print(f"[{view_list[i][0]}| Name: {view_list[i][1]}| Program/Course: {view_list[i][2]}| Schedule: {view_list[i][3]}| Time:{view_list[i][4]}]")
-                    print(" ")
-                    break
-            else:
-                print("INVALID INPUT")
-
-    elif user_input == "4":
-        exit(0)
-    else:
-        print("INVALID CHOICE")
+pygame.quit()
