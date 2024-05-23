@@ -12,32 +12,44 @@ def gameplay():
     screen = pygame.display.set_mode((width, height))
     pygame.display.set_caption("Sample dragging / gameplay")
 
-
-
     active_box = None
     boxes = []
-    for i in range(5): # Number 5 means number of boxes displayed
-
-        # Kaning numbers kay position sa boxes
-        # busa duha ka number, ang tawag ana range
-        # Since nag gamit tag random mag base sya sa range nimo nga 50, 700 mura ra syag mamili between 50 - 700 para sa x or y position sa box
+    for i in range(5):
         x = random.randint(50, 700)
         y = random.randint(50, 700)
-
-        # Kaning numbers kay kadak on sa boxes
-        # busa duha ka number, ang tawag ana range
-        # Since nag gamit tag random mag base sya sa range nimo nga 35, 50 same logic sa x ug y pos
-
         w = random.randint(35, 35)
         h = random.randint(35, 35)
         box = pygame.Rect(x, y, w, h)
         boxes.append(box)
 
-          # Ang naa sa sulod sa parenthesis ana kay default usage
-        # (x_pos, y_pos, Width, height) Mao ni ang default setting
+    class idle_chara(pygame.sprite.Sprite):
+        def __init__(self):
+            super().__init__()
+            self.sprites = [
+                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\1st.png'),
+                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\2nd.png'),
+                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\3rd.png'),
+                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\4th.png'),
+                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\5th.png'),
+                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\6th.png'),
+                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\7th.png'),
+                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\8th.png'),
+                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\9th.png'),
+                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\10th.png')
+            ]
+            self.current_sprite = 0
+            self.image = self.sprites[self.current_sprite]
+            self.rect = self.image.get_rect(topleft=(400, 400))
 
- trash_bins = pygame.image.load("basurahan.png")
-    trash_bins = pygame.transform.scale(trash_bins, (400, 300))
+        def update(self):
+            self.current_sprite += 1
+            if self.current_sprite >= len(self.sprites):
+                self.current_sprite = 0
+            self.image = self.sprites[self.current_sprite]
+
+    all_sprites = pygame.sprite.Group()
+    character = idle_chara()
+    all_sprites.add(character)
 
     running = True
     while running:
@@ -50,8 +62,8 @@ def gameplay():
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if event.button == 1:    # 1 means left mouse button # If 0 means middle click # If 2 kay right click
-                    for num, box in enumerate(boxes):  # For loop to access the list
+                if event.button == 1:
+                    for num, box in enumerate(boxes):
                         if box.collidepoint(event.pos):
                             active_box = num
 
@@ -60,16 +72,18 @@ def gameplay():
                     active_box = None
 
             if event.type == pygame.MOUSEMOTION:
-
-                # noinspection PyUnboundLocalVariable
                 if active_box != None:
                     boxes[active_box].move_ip(event.rel)
 
             if event.type == pygame.QUIT:
                 running = False
 
-        screen.blit(trash_bins, (450, 400))
-        pygame.display.flip() # Mura ranig pygame.update() Gina update niya events sa imong pygame codes para mu display sa screen
+        character.update()  # Update the character sprite
+        all_sprites.update()
+        all_sprites.draw(screen)
+
+        pygame.display.flip()
 
     pygame.quit()
 
+gameplay()
