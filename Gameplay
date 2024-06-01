@@ -3,87 +3,112 @@ import random
 
 pygame.init()
 
-def gameplay():
-    brown = (150, 75, 0)
-    white = (255, 255, 255)
+# Load and scale the background
+background = pygame.image.load('background.png')
+background = pygame.transform.scale(background, (1200, 700))
 
-    width, height = 1200, 700
 
-    screen = pygame.display.set_mode((width, height))
-    pygame.display.set_caption("Sample dragging / gameplay")
+# Define the Idle character class
+class IdleChara:
+    def __init__(self):
+        self.sprites = [
+            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\1st.png'),
+            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\2nd.png'),
+            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\3rd.png'),
+            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\4th.png'),
+            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\5th.png'),
+            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\6th.png'),
+            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\7th.png'),
+            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\8th.png'),
+            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\9th.png'),
+            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\10th.png')
+        ]
 
-    active_box = None
-    boxes = []
-    for i in range(5):
-        x = random.randint(50, 700)
-        y = random.randint(50, 700)
-        w = random.randint(35, 35)
-        h = random.randint(35, 35)
-        box = pygame.Rect(x, y, w, h)
-        boxes.append(box)
+        # Resize the idle character sprites
+        self.sprites = [pygame.transform.scale(sprite, (300, 300)) for sprite in self.sprites]
 
-    class idle_chara(pygame.sprite.Sprite):
-        def __init__(self):
-            super().__init__()
-            self.sprites = [
-                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\1st.png'),
-                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\2nd.png'),
-                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\3rd.png'),
-                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\4th.png'),
-                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\5th.png'),
-                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\6th.png'),
-                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\7th.png'),
-                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\8th.png'),
-                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\9th.png'),
-                pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\10th.png')
-            ]
-            self.current_sprite = 0
-            self.image = self.sprites[self.current_sprite]
-            self.rect = self.image.get_rect(topleft=(400, 400))
+        self.current_sprite = 0
+        self.image = self.sprites[self.current_sprite]
+        self.rect = self.image.get_rect(topleft=(-20, 400))  # Position of the character
 
-        def update(self):
+        self.frame_counter = 0
+        self.frame_delay = 15
+
+    def update(self):
+        self.frame_counter += 1
+        if self.frame_counter >= self.frame_delay:
+            self.frame_counter = 0
             self.current_sprite += 1
             if self.current_sprite >= len(self.sprites):
                 self.current_sprite = 0
             self.image = self.sprites[self.current_sprite]
 
-    all_sprites = pygame.sprite.Group()
-    character = idle_chara()
-    all_sprites.add(character)
+
+def trash_image(num_trashes, image_path, scale_size):  # parameters
+    trashes = []
+    for _ in range(num_trashes):
+        image = pygame.image.load(image_path)  # Parameter sa image_path busa ta maka load sa image
+        image = pygame.transform.scale(image, scale_size)  # naa dari parameter sa scale size
+        x = random.randint(50, 1000)
+        y = random.randint(50, 500)
+        rect = image.get_rect(topleft=(x, y))
+        trashes.append((image, rect))
+    return trashes
+
+
+def gameplay():
+    width, height = 1200, 700
+    screen = pygame.display.set_mode((width, height))
+    pygame.display.set_caption("Sample dragging / gameplay")
+
+    active_trash = None
+                                        # First number kay kung pila kabuok image
+                                        # Ang third part kay ang size sa Image
+                                        # Image dayun sa tunga
+                                        # Basically naa dari mga Value sa kada paramter sa function
+
+    residual_trashes = trash_image(1, 'plastic_bottle.png', (60, 60))
+    plastic_trashes = trash_image(1, 'plastic_bottle.png', (60, 60))
+    bio_trashes = trash_image(1, 'plastic_bottle.png', (60, 60))
+
+    character = IdleChara()
 
     running = True
     while running:
 
-        screen.fill(white)
-        pos = pygame.mouse.get_pos()
+        # blit sa bg image ug trashes
+        screen.blit(background, (0, 0))
 
-        for box in boxes:
-            pygame.draw.rect(screen,  brown, box)
+        for image, rect in residual_trashes + plastic_trashes + bio_trashes:
+            screen.blit(image, rect)
 
         for event in pygame.event.get():
+
+            pos = pygame.mouse.get_pos()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    for num, box in enumerate(boxes):
-                        if box.collidepoint(event.pos):
-                            active_box = num
+                    for trash_list in [residual_trashes, plastic_trashes, bio_trashes]:
+                        for image, rect in trash_list:
+                            if rect.collidepoint(event.pos):
+                                active_trash = rect
 
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
-                    active_box = None
+                    active_trash = None
 
             if event.type == pygame.MOUSEMOTION:
-                if active_box != None:
-                    boxes[active_box].move_ip(event.rel)
+                if active_trash:
+                    active_trash.move_ip(event.rel)
 
             if event.type == pygame.QUIT:
                 running = False
 
-        character.update()  # Update the character sprite
-        all_sprites.update()
-        all_sprites.draw(screen)
+        character.update()
+        screen.blit(character.image, character.rect)
 
         pygame.display.flip()
 
     pygame.quit()
 
-gameplay()
+
