@@ -9,12 +9,11 @@ screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("Main Menu")
 
 # Load and scale the background
-background = pygame.image.load('background.png')
+background = pygame.image.load('Gameplay.png')
 background = pygame.transform.scale(background, (screen_width, screen_height))
 
 
 class IdleChara:
-
     def __init__(self):
         self.sprites = [
             pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\1st.png'),
@@ -59,16 +58,17 @@ def trash_image(num_trashes):
     nonbio_trash_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\trash\\banana.png', (60, 60))
     recycle_trash_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\trash\\plastic_bottle.png', (60, 60))
 
-    bio_trashes = [(bio_trash_image, bio_trash_image.get_rect(topleft=(random.randint(191, 1000), random.randint(324, 500)))) for _ in range(num_trashes)]
-    nonbio_trashes = [(nonbio_trash_image, nonbio_trash_image.get_rect(topleft=(random.randint(191, 1000), random.randint(324, 500)))) for _ in range(num_trashes)]
-    recycle_trashes = [(recycle_trash_image, recycle_trash_image.get_rect(topleft=(random.randint(191, 1000), random.randint(324, 500)))) for _ in range(num_trashes)]
+    bio_trashes = [(bio_trash_image, bio_trash_image.get_rect(topleft=(random.randint(191, 1000), random.randint(324, 500)))) for x in range(num_trashes)]
+    nonbio_trashes = [(nonbio_trash_image, nonbio_trash_image.get_rect(topleft=(random.randint(191, 1000), random.randint(324, 500)))) for x in range(num_trashes)]
+    recycle_trashes = [(recycle_trash_image, recycle_trash_image.get_rect(topleft=(random.randint(191, 1000), random.randint(324, 500)))) for x in range(num_trashes)]
 
     return bio_trashes, nonbio_trashes, recycle_trashes
 
+
 def trash_bins(positions):
-    bio_bin_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\bins\\bio_bin.jpg', (100, 100))
-    nonbio_bin_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\bins\\nonbio_bin.png', (100, 100))
-    recycle_bin_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\bins\\rec_bin.jpg', (100, 100))
+    bio_bin_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\bins\\Basurahan1.png', (200, 200))
+    nonbio_bin_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\bins\\basurahan2.png', (200, 200))
+    recycle_bin_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\bins\\basurahan3.png', (200, 200))
 
     bio_bins = [(bio_bin_image, bio_bin_image.get_rect(topleft=positions[0]))]
     nonbio_bins = [(nonbio_bin_image, nonbio_bin_image.get_rect(topleft=positions[1]))]
@@ -83,7 +83,7 @@ def gameplay(screen, screen_width, screen_height):
 
     bio_trashes, non_bio_trashes, recycle_trashes = trash_image(3)
 
-    bin_positions = [(400, 600), (700, 600), (1000, 600)]       #position sa mga bin each set is from each bin
+    bin_positions = [(400, 600), (700, 600), (1000, 600)]  # Position for each bin
     bio_bins, non_bio_bins, recycle_bins = trash_bins(bin_positions)
 
     character = IdleChara()
@@ -125,7 +125,13 @@ def gameplay(screen, screen_width, screen_height):
                             placed_correctly = False
                             for _, bin_rect in correct_bin:
                                 if bin_rect.colliderect(active_trash):
-                                    active_trash.topleft = bin_rect.topleft
+                                    # Remove trash from list
+                                    if active_trash in [rect for image, rect in bio_trashes]:
+                                        bio_trashes = [(image, rect) for image, rect in bio_trashes if rect != active_trash]
+                                    elif active_trash in [rect for image, rect in non_bio_trashes]:
+                                        non_bio_trashes = [(image, rect) for image, rect in non_bio_trashes if rect != active_trash]
+                                    elif active_trash in [rect for image, rect in recycle_trashes]:
+                                        recycle_trashes = [(image, rect) for image, rect in recycle_trashes if rect != active_trash]
                                     placed_correctly = True
                                     break
                             if not placed_correctly:
@@ -145,3 +151,5 @@ def gameplay(screen, screen_width, screen_height):
 
     pygame.quit()
 
+
+gameplay(screen, screen_width, screen_height)
