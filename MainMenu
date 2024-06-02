@@ -2,7 +2,7 @@ import pygame
 from Button import Button
 from Gameplay import gameplay
 
-# Initialize Pygame
+# Initialize ang Pygame
 pygame.init()
 
 # Screen dimensions
@@ -19,9 +19,9 @@ exit_image = pygame.image.load("Exit.png")
 # Resize images
 new_width = 200
 new_height = 100
+
 play_image = pygame.transform.scale(play_image, (new_width, new_height))
 exit_image = pygame.transform.scale(exit_image, (new_width, new_height))
-
 main_menu_BG = pygame.transform.scale(main_menu_BG, (screen_width, screen_height))
 
 # Button positions
@@ -34,29 +34,48 @@ exit_button_y = 400
 play_button = Button(play_image, play_button_x, play_button_y)
 exit_button = Button(exit_image, exit_button_x, exit_button_y)
 
-# Main loop
+start_sfx = pygame.mixer.Sound('click sound.mp3')
+exit_sfx = pygame.mixer.Sound('click sound.mp3')
+
+
+def fade_out(width, height):
+    speed = 5
+    black = (0, 0, 0)
+    fade_surface = pygame.Surface((width, height))
+    fade_surface.fill(black)
+
+    for alpha in range(0, 255, speed):
+        fade_surface.set_alpha(alpha)
+        screen.blit(main_menu_BG, (0, 0))  # Redraw the background
+        screen.blit(play_button.image, play_button.rect)  # Redraw the buttons
+        screen.blit(exit_button.image, exit_button.rect)
+        screen.blit(fade_surface, (0, 0))
+        pygame.display.update()
+        pygame.time.delay(30)
+
+
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            pygame.quit()
+            running = False
 
-    # Update button state para ma update tong changes sa image
+        if event.type == pygame.MOUSEBUTTONDOWN:  # Button down indication sa mouse click
+            if play_button.check_clicked_button(screen):
+                start_sfx.play()
+                fade_out(screen_width, screen_height,)
+                gameplay(screen, screen_width, screen_height)
+
+            if exit_button.check_clicked_button(screen):
+                exit_sfx.play()
+                running = False
+
     play_button.update()
     exit_button.update()
 
-    # Draw everything
-    screen.blit(main_menu_BG, (0, 0)) # Kaning (0, 0) kay position na sa image
+    screen.blit(main_menu_BG, (0, 0))  # Position of the background image
     screen.blit(play_button.image, play_button.rect)
     screen.blit(exit_button.image, exit_button.rect)
-    pygame.display.flip()
-
-    if play_button.check_clicked_button(screen):
-          gameplay()
-                    # This part is pag call ug function to display the gameplay screen
-
-
-    if exit_button.check_clicked_button(screen):
-        running = False
+    pygame.display.update()
 
 pygame.quit()
