@@ -1,7 +1,9 @@
 import pygame
 import random
+from Button import Button
 
 pygame.init()
+
 
 screen_width = 1280
 screen_height = 720
@@ -12,20 +14,100 @@ pygame.display.set_caption("Main Menu")
 background = pygame.image.load('Gameplay.png')
 background = pygame.transform.scale(background, (screen_width, screen_height))
 
+incorrect_image = pygame.image.load('Incorrect.png')
+incorrect_image = pygame.transform.scale(incorrect_image, (500, 500))
+incorrect_rect = incorrect_image.get_rect(center=(640, 360))
+
+win_image = pygame.image.load('Congrats.png')
+win_image = pygame.transform.scale(win_image, (500, 300))
+win_rect = win_image.get_rect(center=(640, 270))
+
+main_menu_BG = pygame.image.load("BlackBG.png")
+exit_image = pygame.image.load("Exit.png")
+retry_image = pygame.image.load("Retry.png")
+
+# Resize images
+new_width = 200
+new_height = 100
+
+retry_image = pygame.transform.scale(retry_image, (new_width, new_height))
+exit_image = pygame.transform.scale(exit_image, (new_width, new_height))
+main_menu_BG = pygame.transform.scale(main_menu_BG, (screen_width, screen_height))
+
+# Button positions
+retry_button_x = 350
+retry_button_y = 500
+exit_button_x = 750
+exit_button_y = 500
+
+# Button instances
+retry_button = Button(retry_image, retry_button_x, retry_button_y)
+exit_button = Button(exit_image, exit_button_x, exit_button_y)
+
+retry_sfx = pygame.mixer.Sound('click sound.mp3')
+exit_sfx = pygame.mixer.Sound('click sound.mp3')
+
+def fade_out(width, height):
+    speed = 5
+    black = (0, 0, 0)
+    fade_surface = pygame.Surface((width, height))
+    fade_surface.fill(black)
+
+    for alpha in range(0, 255, speed):
+        fade_surface.set_alpha(alpha)
+        screen.blit(main_menu_BG, (0, 0))  # Redraw the background
+        screen.blit(win_image, win_rect)
+        screen.blit(retry_button.image, retry_button.rect)  # Redraw the buttons
+        screen.blit(exit_button.image, exit_button.rect)
+        screen.blit(fade_surface, (0, 0))
+        pygame.display.update()
+        pygame.time.delay(30)
+
+def retry(screen):
+    running = True
+    while running:
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:  # Button down indication sa mouse click
+                if retry_button.check_clicked_button(screen):
+                    retry_sfx.play()
+                    fade_out(screen_width, screen_height)
+                    gameplay(screen, screen_width, screen_height)
+
+                if exit_button.check_clicked_button(screen):
+                    exit_sfx.play()
+                    running = False
+
+        retry_button.update()
+        exit_button.update()
+
+        screen.blit(main_menu_BG, (0, 0))  # Position of the background image
+        screen.blit(win_image, win_rect)
+        screen.blit(retry_button.image, retry_button.rect)
+        screen.blit(exit_button.image, exit_button.rect)
+        pygame.display.update()
+
+    pygame.quit()
+
+blop_sfx = pygame.mixer.Sound('blop.mp3')
 
 class IdleChara:
     def __init__(self):
         self.sprites = [
-            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\1st.png'),
-            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\2nd.png'),
-            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\3rd.png'),
-            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\4th.png'),
-            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\5th.png'),
-            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\6th.png'),
-            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\7th.png'),
-            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\8th.png'),
-            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\9th.png'),
-            pygame.image.load('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\idle_character\\10th.png')
+            pygame.image.load('idle_character/1st.png'),
+            pygame.image.load('idle_character/2nd.png'),
+            pygame.image.load('idle_character/3rd.png'),
+            pygame.image.load('idle_character/4th.png'),
+            pygame.image.load('idle_character/5th.png'),
+            pygame.image.load('idle_character/6th.png'),
+            pygame.image.load('idle_character/7th.png'),
+            pygame.image.load('idle_character/8th.png'),
+            pygame.image.load('idle_character/9th.png'),
+            pygame.image.load('idle_character/10th.png')
         ]
 
         # Resize the idle character sprites
@@ -47,28 +129,45 @@ class IdleChara:
                 self.current_sprite = 0
             self.image = self.sprites[self.current_sprite]
 
-
 def load_trash_image(image_path, size):
     image = pygame.image.load(image_path)
     return pygame.transform.scale(image, size)
 
-
 def trash_image(num_trashes):
-    bio_trash_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\trash\\apple.png', (60, 60))
-    nonbio_trash_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\trash\\banana.png', (60, 60))
-    recycle_trash_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\trash\\plastic_bottle.png', (60, 60))
+    bio_trash_images = [
+        'trash/apple.png',
+        'trash/banana.png',
+        'trash/bone.png'
+    ]
 
-    bio_trashes = [(bio_trash_image, bio_trash_image.get_rect(topleft=(random.randint(191, 1000), random.randint(324, 500)))) for x in range(num_trashes)]
-    nonbio_trashes = [(nonbio_trash_image, nonbio_trash_image.get_rect(topleft=(random.randint(191, 1000), random.randint(324, 500)))) for x in range(num_trashes)]
-    recycle_trashes = [(recycle_trash_image, recycle_trash_image.get_rect(topleft=(random.randint(191, 1000), random.randint(324, 500)))) for x in range(num_trashes)]
+    nonbio_trash_images = [
+        'trash/candy-wrapper.png',
+        'trash/chip_wrapper.png',
+        'trash/boba.png'
+    ]
+
+    recycle_trash_images = [
+        'trash/plastic_bottle.png'
+    ]
+
+    bio_trashes = [(load_trash_image(img, (60, 60)), pygame.Rect(random.randint(191, 1000), random.randint(324, 500), 60, 60)) for img in bio_trash_images for _ in range(num_trashes)]
+    nonbio_trashes = [(load_trash_image(img, (60, 60)), pygame.Rect(random.randint(191, 1000), random.randint(324, 500), 60, 60)) for img in nonbio_trash_images for _ in range(num_trashes)]
+    recycle_trashes = [(load_trash_image(img, (60, 60)), pygame.Rect(random.randint(191, 1000), random.randint(324, 500), 60, 60)) for img in recycle_trash_images for _ in range(num_trashes)]
 
     return bio_trashes, nonbio_trashes, recycle_trashes
 
-
 def trash_bins(positions):
-    bio_bin_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\bins\\Basurahan1.png', (200, 200))
-    nonbio_bin_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\bins\\basurahan2.png', (200, 200))
-    recycle_bin_image = load_trash_image('C:\\Users\\User\\PycharmProjects\\Scratch\\Prac\\bins\\basurahan3.png', (200, 200))
+    img_width = 250
+    img_height = 200
+
+    bio_bin_image = pygame.image.load('bins/Basurahan1.png')
+    bio_bin_image = pygame.transform.scale(bio_bin_image, (img_width, img_height))
+
+    nonbio_bin_image = pygame.image.load('bins/basurahan2.png')
+    nonbio_bin_image = pygame.transform.scale(nonbio_bin_image, (img_width, img_height))
+
+    recycle_bin_image = pygame.image.load('bins/basurahan3.png')
+    recycle_bin_image = pygame.transform.scale(recycle_bin_image, (img_width, img_height))
 
     bio_bins = [(bio_bin_image, bio_bin_image.get_rect(topleft=positions[0]))]
     nonbio_bins = [(nonbio_bin_image, nonbio_bin_image.get_rect(topleft=positions[1]))]
@@ -76,14 +175,27 @@ def trash_bins(positions):
 
     return bio_bins, nonbio_bins, recycle_bins
 
+def transparent_bg(width, height):
+    speed = 5
+    black = (0, 0, 0)
+    fade_surface = pygame.Surface((width, height))
+    fade_surface.fill(black)
+
+    for alpha in range(0, 255, speed):
+        fade_surface.set_alpha(alpha)
+        screen.blit(background, (0, 0))  # Redraw the background
+        pygame.display.update()
+        pygame.time.delay(0)
 
 def gameplay(screen, screen_width, screen_height):
+
     pygame.display.set_caption("Sample dragging / gameplay")
     active_trash = None
+    show_incorrect = False
+    incorrect_timer = 0
 
-    bio_trashes, non_bio_trashes, recycle_trashes = trash_image(3)
-
-    bin_positions = [(400, 600), (700, 600), (1000, 600)]  # Position for each bin
+    bio_trashes, non_bio_trashes, recycle_trashes = trash_image(1)
+    bin_positions = [(500, 600), (750, 600), (1000, 600)]
     bio_bins, non_bio_bins, recycle_bins = trash_bins(bin_positions)
 
     character = IdleChara()
@@ -92,12 +204,10 @@ def gameplay(screen, screen_width, screen_height):
     while running:
         screen.blit(background, (0, 0))
 
-        # Draw trashes
-        for image, rect in bio_trashes + non_bio_trashes + recycle_trashes:
+        for image, rect in bio_bins + non_bio_bins + recycle_bins:
             screen.blit(image, rect)
 
-        # Draw bins
-        for image, rect in bio_bins + non_bio_bins + recycle_bins:
+        for image, rect in bio_trashes + non_bio_trashes + recycle_trashes:
             screen.blit(image, rect)
 
         for event in pygame.event.get():
@@ -125,7 +235,6 @@ def gameplay(screen, screen_width, screen_height):
                             placed_correctly = False
                             for _, bin_rect in correct_bin:
                                 if bin_rect.colliderect(active_trash):
-                                    # Remove trash from list
                                     if active_trash in [rect for image, rect in bio_trashes]:
                                         bio_trashes = [(image, rect) for image, rect in bio_trashes if rect != active_trash]
                                     elif active_trash in [rect for image, rect in non_bio_trashes]:
@@ -133,9 +242,12 @@ def gameplay(screen, screen_width, screen_height):
                                     elif active_trash in [rect for image, rect in recycle_trashes]:
                                         recycle_trashes = [(image, rect) for image, rect in recycle_trashes if rect != active_trash]
                                     placed_correctly = True
+                                    blop_sfx.play()
                                     break
                             if not placed_correctly:
-                                print("Incorrect bin!")
+
+                                show_incorrect = True
+                                incorrect_timer = pygame.time.get_ticks()  # Start the timer
                         active_trash = None
 
             if event.type == pygame.MOUSEMOTION:
@@ -147,9 +259,17 @@ def gameplay(screen, screen_width, screen_height):
 
         character.update()
         screen.blit(character.image, character.rect)
+
+        # Show the incorrect image for 2 seconds
+        if show_incorrect:
+            screen.blit(incorrect_image, incorrect_rect)
+            if pygame.time.get_ticks() - incorrect_timer > 1000:  # millisecond ang 1000
+                show_incorrect = False
+
+        # Check if all trash items have been correctly segregated
+        if not bio_trashes and not non_bio_trashes and not recycle_trashes:
+            retry(screen)
+
         pygame.display.update()
 
     pygame.quit()
-
-
-gameplay(screen, screen_width, screen_height)
