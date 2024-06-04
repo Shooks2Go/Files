@@ -1,2 +1,142 @@
-#WALA PAY SULOD 
-# WAPAKO KABALO SAON PAG INSERT SA VIDEO 
+import pygame
+import cv2
+from Gameplay import gameplay
+
+def play_video(screen, video_path, audio_path=None):
+    # Initialize audio
+    if audio_path:
+        pygame.mixer.init()
+        pygame.mixer.music.load(audio_path)
+        pygame.mixer.music.play()
+
+    # Open the video file using OpenCV
+    cap = cv2.VideoCapture(video_path)
+
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    frame_duration = int(1000 / fps)  # Duration of each frame in milliseconds
+
+    clock = pygame.time.Clock()
+
+    while cap.isOpened():
+        start_time = pygame.time.get_ticks()  # Start time for frame
+
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame = cv2.resize(frame, (screen.get_width(), screen.get_height()))
+        frame_surface = pygame.surfarray.make_surface(frame.swapaxes(0, 1))
+        screen.blit(frame_surface, (0, 0))
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                cap.release()
+                if audio_path:
+                    pygame.mixer.music.stop()
+                pygame.quit()
+                return
+
+        # Ensure we maintain the frame duration
+        elapsed_time = pygame.time.get_ticks() - start_time
+        if elapsed_time < frame_duration:
+            pygame.time.delay(int(frame_duration - elapsed_time))
+
+    cap.release()
+    if audio_path:
+        pygame.mixer.music.stop()
+
+def play_intro(screen):
+    # Paths for intro video and audio
+    intro_video_path = 'Video/intro.mp4'
+    intro_audio_path = 'Video/intro.mp3'
+    loading_video_path = 'Video/laoding.mp4'
+
+    # Play the intro video with audio
+    play_video(screen, intro_video_path, intro_audio_path)
+
+    # Transition effect (simple fade to black)
+    fade_surface = pygame.Surface((screen.get_width(), screen.get_height()))
+    fade_surface.fill((0, 0, 0))
+    for alpha in range(0, 256, 5):
+        fade_surface.set_alpha(alpha)
+        screen.blit(fade_surface, (0, 0))
+        pygame.display.update()
+        pygame.time.delay(10)
+
+    # Play the loading video
+    play_video(screen, loading_video_path)
+
+def play_main_video(screen):
+    # Paths for main video and audio
+    main_video_path = 'Video/waste seg tuto.mp4'
+    main_audio_path = 'Video/waste seg tuto.mp3'
+    skip_image_path = 'Skip.png'
+
+    # Load the skip button image and scale it
+    skip_image = pygame.image.load(skip_image_path)
+    skip_image = pygame.transform.scale(skip_image, (120, 50))
+    hover_skip_image = skip_image.copy()
+    hover_skip_image.fill((255, 0, 0), special_flags=pygame.BLEND_RGBA_MULT)  # Change color on hover
+
+    # Position for the skip button (bottom right corner)
+    skip_button = skip_image.get_rect(bottomright=(screen.get_width() - 10, screen.get_height() - 10))
+
+    # Play the audio
+    pygame.mixer.init()
+    pygame.mixer.music.load(main_audio_path)
+    pygame.mixer.music.play()
+
+    # Open the video file using OpenCV
+    cap = cv2.VideoCapture(main_video_path)
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    frame_duration = int(1000 / fps)  # Duration of each frame in milliseconds
+
+    clock = pygame.time.Clock()
+
+    while cap.isOpened():
+        start_time = pygame.time.get_ticks()  # Start time for frame
+
+        ret, frame = cap.read()
+        if not ret:
+            break
+
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame = cv2.resize(frame, (screen.get_width(), screen.get_height()))
+        frame_surface = pygame.surfarray.make_surface(frame.swapaxes(0, 1))
+
+        screen.blit(frame_surface, (0, 0))
+
+        # Check for hover and display the appropriate skip button
+        if skip_button.collidepoint(pygame.mouse.get_pos()):
+            screen.blit(hover_skip_image, skip_button)
+        else:
+            screen.blit(skip_image, skip_button)
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                cap.release()
+                pygame.mixer.music.stop()
+                pygame.quit()
+                return
+
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if skip_button.collidepoint(event.pos):
+
+                    screen_width = 1200
+                    screen_height = 700
+                    cap.release()
+                    pygame.mixer.music.stop()
+                    gameplay(screen, screen_width, screen_height)
+
+        # Ensure we maintain the frame duration
+        elapsed_time = pygame.time.get_ticks() - start_time
+        if elapsed_time < frame_duration:
+            pygame.time.delay(int(frame_duration - elapsed_time))
+
+    cap.release()
+    pygame.mixer.music.stop()
+
