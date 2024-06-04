@@ -1,13 +1,13 @@
 import pygame
 
-BLACK = (0, 0, 0)
+color = (200, 200, 200)
 
 pygame.init()
 
 class Button:
     def __init__(self, image, x_pos, y_pos):
         self.default_image = image
-        self.hover_image = self.change_image_color(image, BLACK)  # Hover color
+        self.hover_image = self.change_image_color(image, color)  # Hover color
         self.image = self.default_image
         self.rect = self.image.get_rect(topleft=(x_pos, y_pos))  # Kaning topleft kay para sa assigned na position,
                                                                  # so kay topleft man ang na assign, atong coordinates
@@ -17,10 +17,11 @@ class Button:
         self.y_pos = y_pos
         self.clicked = False
 
-    def change_image_color(self, image, color):
+    def change_image_color(self, image, color_fill):
+
         # Create a copy of the image and fill it with specified color
         new_image = image.copy()
-        new_image.fill(color, None, pygame.BLEND_RGBA_MULT)
+        new_image.fill(color_fill, None, pygame.BLEND_RGBA_MULT)
         return new_image
 
     def update(self):
@@ -39,8 +40,6 @@ class Button:
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
                 action = True
-            if pygame.mouse.get_pressed()[0] == 0:
-                self.clicked = False
 
         screen.blit(self.image, (self.rect.x, self.rect.y))
         return action
