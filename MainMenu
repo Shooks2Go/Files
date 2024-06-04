@@ -1,6 +1,7 @@
 import pygame
 from Button import Button
 from Gameplay import gameplay
+from Game_intro import play_intro, play_main_video
 
 # Initialize ang Pygame
 pygame.init()
@@ -25,10 +26,10 @@ exit_image = pygame.transform.scale(exit_image, (new_width, new_height))
 main_menu_BG = pygame.transform.scale(main_menu_BG, (screen_width, screen_height))
 
 # Button positions
-play_button_x = 365
-play_button_y = 400
-exit_button_x = 720
-exit_button_y = 400
+play_button_x = 843
+play_button_y = 321
+exit_button_x = 843
+exit_button_y = 450
 
 # Button instances
 play_button = Button(play_image, play_button_x, play_button_y)
@@ -53,17 +54,21 @@ def fade_out(width, height):
         pygame.display.update()
         pygame.time.delay(30)
 
+play_intro(screen)
 
 running = True
 while running:
+
     for event in pygame.event.get():
+
         if event.type == pygame.QUIT:
             running = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:  # Button down indication sa mouse click
             if play_button.check_clicked_button(screen):
                 start_sfx.play()
-                fade_out(screen_width, screen_height,)
+                fade_out(screen_width, screen_height)
+                play_main_video(screen)
                 gameplay(screen, screen_width, screen_height)
 
             if exit_button.check_clicked_button(screen):
