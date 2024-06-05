@@ -1,6 +1,6 @@
 import pygame
 from Button import Button
-from Gameplay import gameplay
+from Gameplay import main
 from Game_intro import play_intro, play_main_video
 
 # Initialize ang Pygame
@@ -69,7 +69,7 @@ while running:
                 start_sfx.play()
                 fade_out(screen_width, screen_height)
                 play_main_video(screen)
-                gameplay(screen, screen_width, screen_height)
+                main()
 
             if exit_button.check_clicked_button(screen):
                 exit_sfx.play()
