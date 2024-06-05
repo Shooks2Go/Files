@@ -15,8 +15,8 @@ background = pygame.image.load('Gameplay.png')
 background = pygame.transform.scale(background, (screen_width, screen_height))
 
 incorrect_image = pygame.image.load('Incorrect.png')
-incorrect_image = pygame.transform.scale(incorrect_image, (500, 500))
-incorrect_rect = incorrect_image.get_rect(center=(640, 360))
+incorrect_image = pygame.transform.scale(incorrect_image, (400, 100))
+incorrect_rect = incorrect_image.get_rect(center=(640, 240))
 
 win_image = pygame.image.load('Congrats.png')
 win_image = pygame.transform.scale(win_image, (500, 300))
@@ -63,37 +63,9 @@ def fade_out(width, height):
         pygame.display.update()
         pygame.time.delay(30)
 
-def retry(screen):
-    running = True
-    while running:
-
-        for event in pygame.event.get():
-
-            if event.type == pygame.QUIT:
-                running = False
-
-            if event.type == pygame.MOUSEBUTTONDOWN:  # Button down indication sa mouse click
-                if retry_button.check_clicked_button(screen):
-                    retry_sfx.play()
-                    fade_out(screen_width, screen_height)
-                    gameplay(screen, screen_width, screen_height)
-
-                if exit_button.check_clicked_button(screen):
-                    exit_sfx.play()
-                    running = False
-
-        retry_button.update()
-        exit_button.update()
-
-        screen.blit(main_menu_BG, (0, 0))  # Position of the background image
-        screen.blit(win_image, win_rect)
-        screen.blit(retry_button.image, retry_button.rect)
-        screen.blit(exit_button.image, exit_button.rect)
-        pygame.display.update()
-
-    pygame.quit()
 
 blop_sfx = pygame.mixer.Sound('blop.mp3')
+
 
 class IdleChara:
     def __init__(self):
@@ -129,9 +101,11 @@ class IdleChara:
                 self.current_sprite = 0
             self.image = self.sprites[self.current_sprite]
 
+
 def load_trash_image(image_path, size):
     image = pygame.image.load(image_path)
     return pygame.transform.scale(image, size)
+
 
 def trash_image(num_trashes):
     bio_trash_images = [
@@ -147,7 +121,9 @@ def trash_image(num_trashes):
     ]
 
     recycle_trash_images = [
-        'trash/plastic_bottle.png'
+        'trash/plastic_bottle.png',
+        'trash/can.png',
+        'trash/glass_bottle.png'
     ]
 
     bio_trashes = [(load_trash_image(img, (60, 60)), pygame.Rect(random.randint(191, 1000), random.randint(324, 500), 60, 60)) for img in bio_trash_images for _ in range(num_trashes)]
@@ -186,6 +162,36 @@ def transparent_bg(width, height):
         screen.blit(background, (0, 0))  # Redraw the background
         pygame.display.update()
         pygame.time.delay(0)
+
+
+def retry(screen):
+    running = True
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.MOUSEBUTTONDOWN:  # Button down indication sa mouse click
+                if retry_button.check_clicked_button(screen):
+                    retry_sfx.play()
+                    fade_out(screen_width, screen_height)
+                    gameplay(screen, screen_width, screen_height)
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if exit_button.check_clicked_button(screen):
+                    exit_sfx.play()
+                    running = False
+
+        retry_button.update()
+        exit_button.update()
+
+        screen.blit(main_menu_BG, (0, 0))  # Position of the background image
+        screen.blit(win_image, win_rect)
+        screen.blit(retry_button.image, retry_button.rect)
+        screen.blit(exit_button.image, exit_button.rect)
+        pygame.display.update()
+
+    pygame.quit()
+
 
 def gameplay(screen, screen_width, screen_height):
 
@@ -254,10 +260,8 @@ def gameplay(screen, screen_width, screen_height):
                 if active_trash:
                     active_trash.topleft = (pos[0] - active_trash.width // 2, pos[1] - active_trash.height // 2)
 
-            if event.type == pygame.QUIT:
-                running = False
-
         character.update()
+
         screen.blit(character.image, character.rect)
 
         # Show the incorrect image for 2 seconds
@@ -273,3 +277,5 @@ def gameplay(screen, screen_width, screen_height):
         pygame.display.update()
 
     pygame.quit()
+
+gameplay(screen, screen_width, screen_height)
