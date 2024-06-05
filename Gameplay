@@ -4,7 +4,6 @@ from Button import Button
 
 pygame.init()
 
-
 screen_width = 1280
 screen_height = 720
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -55,9 +54,9 @@ def fade_out(width, height):
 
     for alpha in range(0, 255, speed):
         fade_surface.set_alpha(alpha)
-        screen.blit(main_menu_BG, (0, 0))  # Redraw the background
+        screen.blit(main_menu_BG, (0, 0))
         screen.blit(win_image, win_rect)
-        screen.blit(retry_button.image, retry_button.rect)  # Redraw the buttons
+        screen.blit(retry_button.image, retry_button.rect)
         screen.blit(exit_button.image, exit_button.rect)
         screen.blit(fade_surface, (0, 0))
         pygame.display.update()
@@ -126,9 +125,9 @@ def trash_image(num_trashes):
         'trash/glass_bottle.png'
     ]
 
-    bio_trashes = [(load_trash_image(img, (60, 60)), pygame.Rect(random.randint(191, 1000), random.randint(324, 500), 60, 60)) for img in bio_trash_images for _ in range(num_trashes)]
-    nonbio_trashes = [(load_trash_image(img, (60, 60)), pygame.Rect(random.randint(191, 1000), random.randint(324, 500), 60, 60)) for img in nonbio_trash_images for _ in range(num_trashes)]
-    recycle_trashes = [(load_trash_image(img, (60, 60)), pygame.Rect(random.randint(191, 1000), random.randint(324, 500), 60, 60)) for img in recycle_trash_images for _ in range(num_trashes)]
+    bio_trashes = [(load_trash_image(img, (60, 60)), pygame.Rect(random.randint(191, 1000), random.randint(324, 500), 60, 60)) for img in bio_trash_images for x in range(num_trashes)]
+    nonbio_trashes = [(load_trash_image(img, (60, 60)), pygame.Rect(random.randint(191, 1000), random.randint(324, 500), 60, 60)) for img in nonbio_trash_images for x in range(num_trashes)]
+    recycle_trashes = [(load_trash_image(img, (60, 60)), pygame.Rect(random.randint(191, 1000), random.randint(324, 500), 60, 60)) for img in recycle_trash_images for x in range(num_trashes)]
 
     return bio_trashes, nonbio_trashes, recycle_trashes
 
@@ -169,17 +168,16 @@ def retry(screen):
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                return "exit"
 
             if event.type == pygame.MOUSEBUTTONDOWN:  # Button down indication sa mouse click
                 if retry_button.check_clicked_button(screen):
                     retry_sfx.play()
                     fade_out(screen_width, screen_height)
-                    gameplay(screen, screen_width, screen_height)
-            if event.type == pygame.MOUSEBUTTONDOWN:
+                    return "retry"
                 if exit_button.check_clicked_button(screen):
                     exit_sfx.play()
-                    running = False
+                    return "exit"
 
         retry_button.update()
         exit_button.update()
@@ -190,11 +188,8 @@ def retry(screen):
         screen.blit(exit_button.image, exit_button.rect)
         pygame.display.update()
 
-    pygame.quit()
-
 
 def gameplay(screen, screen_width, screen_height):
-
     pygame.display.set_caption("Sample dragging / gameplay")
     active_trash = None
     show_incorrect = False
@@ -218,6 +213,9 @@ def gameplay(screen, screen_width, screen_height):
 
         for event in pygame.event.get():
             pos = pygame.mouse.get_pos()
+
+            if event.type == pygame.QUIT:
+                return "exit"
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -251,9 +249,8 @@ def gameplay(screen, screen_width, screen_height):
                                     blop_sfx.play()
                                     break
                             if not placed_correctly:
-
                                 show_incorrect = True
-                                incorrect_timer = pygame.time.get_ticks()  # Start the timer
+                                incorrect_timer = pygame.time.get_ticks()  # Start timer
                         active_trash = None
 
             if event.type == pygame.MOUSEMOTION:
@@ -270,12 +267,21 @@ def gameplay(screen, screen_width, screen_height):
             if pygame.time.get_ticks() - incorrect_timer > 1000:  # millisecond ang 1000
                 show_incorrect = False
 
-        # Check if all trash items have been correctly segregated
+        # Check sa trash nga segregated
         if not bio_trashes and not non_bio_trashes and not recycle_trashes:
-            retry(screen)
+            result = retry(screen)
+            if result == "retry":               # Kaning mga string ang tawag ana kay flagging
+                return "retry"                  # Mura ra japun nag ginagamit para mag control sa loop
+            elif result == "exit":              # Parehas ra japun ni sya sa 'True' ug 'False" nga flagging
+                return "exit"                   # Kani lang gigamit kay mas dali basahon
 
         pygame.display.update()
 
+def main():
+    while True:
+        result = gameplay(screen, screen_width, screen_height)
+        if result == "exit":
+            break
     pygame.quit()
 
-gameplay(screen, screen_width, screen_height)
+
