@@ -1,6 +1,6 @@
 import pygame
 import cv2
-from Gameplay import gameplay
+from Gameplay import main
 
 def play_video(screen, video_path, audio_path=None):
     # Initialize audio
@@ -130,7 +130,7 @@ def play_main_video(screen):
                     screen_height = 700
                     cap.release()
                     pygame.mixer.music.stop()
-                    gameplay(screen, screen_width, screen_height)
+                    main()
 
         # Ensure we maintain the frame duration
         elapsed_time = pygame.time.get_ticks() - start_time
